@@ -1,5 +1,5 @@
 libmint
--------
+=======
 
 Custom base library for C++20 based on libc, which does not use the STL
 apart from the new/delete operators. For real world applications, you
@@ -9,6 +9,9 @@ C++ code clean, with better names and more descriptive method names.
 For example, instead of using the std::string type which is buried under
 a milion layers of unreadable template code, you can simply:
 
+	#include <mint/print.h>
+	#include <mint/str.h>
+
 	str welcome = "hello world!";
 
 	welcome.replace('h', 'H').replace('w', 'W');
@@ -16,3 +19,26 @@ a milion layers of unreadable template code, you can simply:
 
 Because this library is based on concepts instead of std::enable_if hell,
 the library code itself is clean and is easily modifiable.
+
+
+Use
+---
+
+After installing the static library, you can link with it using:
+
+	$ c++ -std=c++2a file.cc /usr/local/lib/libmint.a
+
+If it fails to find the headers, you may add `-I/usr/local/include`.
+
+
+Install
+-------
+
+Requirements:
+	- GCC or Clang C++ compiler, that can handle C++20
+	- meson
+	- ninja
+
+This command will compile & install the library and headers into /usr/local:
+
+	# ./install.sh

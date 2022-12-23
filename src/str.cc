@@ -78,7 +78,7 @@ void str::print() const
 
 str &str::replace(char from, char to)
 {
-	for (int i = 0; i < m_len; i++) {
+	for (size_t i = 0; i < m_len; i++) {
 		if (m_ptr[i] == from)
 			m_ptr[i] = to;
 	}
