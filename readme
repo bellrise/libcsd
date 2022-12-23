@@ -1,4 +1,18 @@
 libmint
 -------
 
-Custom base library for C++20 based on libc.
+Custom base library for C++20 based on libc, which does not use the STL
+apart from the new/delete operators. For real world applications, you
+should use the STL instead. This project is mostly for making my own
+C++ code clean, with better names and more descriptive method names.
+
+For example, instead of using the std::string type which is buried under
+a milion layers of unreadable template code, you can simply:
+
+	str welcome = "hello world!";
+
+	welcome.replace('h', 'H').replace('w', 'W');
+	println(welcome);
+
+Because this library is based on concepts instead of std::enable_if hell,
+the library code itself is clean and is easily modifiable.

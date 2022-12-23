@@ -32,6 +32,7 @@ struct str
 	str(const char *string);
 	str(const char *string, size_t maxlen);
 
+	/* Accept anything that can be converted into a string. */
 	template <StringConvertible T>
 	str(const T &object)
 		: str(object.to_str())
@@ -39,12 +40,17 @@ struct str
 
 	~str();
 
+	/* Stat methods */
 	size_t len() const;
 	str to_str() const;
-	void print_to_stdout() const;
+	void print() const;
+
+	/* Chain-modify methods */
+	str &replace(char from, char to);
 	str &append(const str &next);
 	str &append(const char *next);
 
+	/* Overloads */
 	str &operator=(const str &other);
 	str &operator=(const char *other);
 	str &operator+(const str &next);
@@ -55,6 +61,7 @@ struct str
 protected:
 	char *m_ptr;
 	size_t m_space;
+	size_t m_len;
 
 	void copy_from(const str &other);
 	void copy_from_raw(const char *other, size_t other_len);

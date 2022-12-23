@@ -7,8 +7,8 @@ sources = [
 ]
 
 includes = include_directories('../incl')
-lib = static_library('mint', sources, include_directories: includes,
-  cpp_args: ['-ggdb'])
+lib = static_library('mint', sources, include_directories: includes)
+# cpp_args: ['-ggdb'])
 
 # For testing
 if fs.is_file('main.cc')

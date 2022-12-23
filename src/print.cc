@@ -17,7 +17,7 @@ void print(const char *val)
 
 void print(const str &val)
 {
-	val.print_to_stdout();
+	val.print();
 }
 
 void print(const char val)
