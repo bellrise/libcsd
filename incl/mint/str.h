@@ -37,10 +37,10 @@ struct str
 		: str(object.to_str())
 	{ }
 
-	virtual ~str();
+	~str();
 
 	size_t len() const;
-	virtual str to_str() const;
+	str to_str() const;
 	void print_to_stdout() const;
 	str &append(const str &next);
 	str &append(const char *next);
@@ -63,5 +63,5 @@ protected:
 	   of available bytes to use, and not the resized space. This way any caller
 	   functions may check if the next operation will fit in the buffer. resize()
 	   may modify m_space. */
-	[[nodiscard]] virtual size_t resize(size_t nbytes);
+	[[nodiscard]] size_t resize(size_t nbytes);
 };
