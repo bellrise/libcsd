@@ -27,3 +27,10 @@ str index_exception::message() const
 
 	return err;
 }
+
+str unpack_exception::message() const
+{
+	str err = "unpack_exception: tried to unpack the value from ";
+	err += "maybe<T>, but no value was present";
+	return err;
+}

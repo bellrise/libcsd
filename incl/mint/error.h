@@ -2,6 +2,7 @@
    Copyright (c) 2022 bellrise */
 
 #pragma once
+#include <mint/str.h>
 
 struct str;
 
@@ -31,7 +32,6 @@ struct index_exception : public any_exception
 {
 	index_exception(int index);
 	index_exception(int index, int min, int max);
-
 	str message() const override;
 
 private:
@@ -39,4 +39,16 @@ private:
 	int m_index;
 	int m_min;
 	int m_max;
+};
+
+/**
+ * @exception unpack_exception
+ * Tried to unpack a value from maybe<T>, but the value wasn't present.
+ */
+struct unpack_exception : public any_exception
+{
+	str message() const override;
+
+private:
+	str m_type_name;
 };
