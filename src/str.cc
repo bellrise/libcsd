@@ -54,6 +54,18 @@ str::str(const char *string, size_t maxlen)
 	copy_from_raw(string, maxlen);
 }
 
+str::str(int number)
+	: m_ptr(nullptr)
+	, m_space(0)
+	, m_len(0)
+{
+	char buf[16];
+	memset(buf, 0, 16);
+
+	snprintf(buf, 16, "%d", number);
+	copy_from_raw(buf, strlen(buf));
+}
+
 str::~str()
 {
 	delete [] m_ptr;
@@ -74,6 +86,35 @@ void str::print() const
 	if (len() == 0)
 		return;
 	printf("%.*s", (int) len(), m_ptr);
+}
+
+size_t str::find(const str &substr)
+{
+	if (len() < substr.len())
+		return invalid_index;
+
+	for (size_t i = 0; i <= len() - substr.len(); i++) {
+		if (!strncmp(m_ptr + i, substr.m_ptr, substr.len()))
+			return i;
+	}
+
+	return invalid_index;
+}
+
+str str::substr(size_t start_index, size_t length)
+{
+	if (start_index >= len())
+		return str();
+
+	/* Clamping the length value for our use case. */
+	if (length + start_index >= len())
+		length = -1;
+	if (length < 0)
+		length = len() - start_index;
+	if (length == 0)
+		return str();
+
+	return str(m_ptr + start_index, length);
 }
 
 str &str::replace(char from, char to)
@@ -210,4 +251,11 @@ str &str::operator+=(const char *next)
 {
 	append(next);
 	return *this;
+}
+
+char &str::operator[](size_t index)
+{
+	if (index < 0 || index >= len())
+		throw index_exception(index, 0, len() - 1);
+	return m_ptr[index];
 }
