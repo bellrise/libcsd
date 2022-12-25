@@ -3,6 +3,7 @@
 
 #pragma once
 #include <mint/str.h>
+#include <mint/box.h>
 
 /* Print functions. */
 
@@ -19,6 +20,12 @@ void print(const long val);
 void print(const unsigned long val);
 void print(const float val);
 void print(const double val);
+
+template <typename T>
+void print(const box<T> &ref)
+{
+	print(*ref);
+}
 
 template <StringConvertible T>
 void print(const T &value)
