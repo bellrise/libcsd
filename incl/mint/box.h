@@ -41,7 +41,7 @@ template <typename T>
 struct box
 {
 	/* Boxes must be initialized with a value. */
-	box() = delete;
+	box() =delete;
 
 	box(T &&moved_value)
 		: m_ptr(new T(moved_value))

@@ -2,7 +2,6 @@
    Copyright (c) 2022 bellrise */
 
 #pragma once
-#include <mint/error.h>
 #include <stddef.h>
 
 struct str;
@@ -70,10 +69,12 @@ struct str
 	str &operator+(const char *next);
 	str &operator+=(const str &next);
 	str &operator+=(const char *next);
+	bool operator==(const str &other) const;
 
 	/* Returns the character at the given index. May throw index_exception if
 	   `index` is out of bounds. */
 	char &operator[](size_t index);
+	char operator[](size_t index) const;
 
 protected:
 	char *m_ptr;

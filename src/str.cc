@@ -1,6 +1,7 @@
 /* libmint/src/str.cc
    Copyright (c) 2022 bellrise */
 
+#include <mint/error.h>
 #include <mint/str.h>
 #include <string.h>
 #include <stdio.h>
@@ -253,7 +254,19 @@ str &str::operator+=(const char *next)
 	return *this;
 }
 
+bool str::operator==(const str &other) const
+{
+	return len() == other.len() && !strncmp(m_ptr, other.m_ptr, len());
+}
+
 char &str::operator[](size_t index)
+{
+	if (index < 0 || index >= len())
+		throw index_exception(index, 0, len() - 1);
+	return m_ptr[index];
+}
+
+char str::operator[](size_t index) const
 {
 	if (index < 0 || index >= len())
 		throw index_exception(index, 0, len() - 1);
