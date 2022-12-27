@@ -55,6 +55,18 @@ str::str(const char *string, size_t maxlen)
 	copy_from_raw(string, maxlen);
 }
 
+str::str(size_t number)
+	: m_ptr(nullptr)
+	, m_space(0)
+	, m_len(0)
+{
+	char buf[16];
+	memset(buf, 0, 16);
+
+	snprintf(buf, 16, "%zu", number);
+	copy_from_raw(buf, strlen(buf));
+}
+
 str::str(int number)
 	: m_ptr(nullptr)
 	, m_space(0)
@@ -65,6 +77,14 @@ str::str(int number)
 
 	snprintf(buf, 16, "%d", number);
 	copy_from_raw(buf, strlen(buf));
+}
+
+str::str(char c)
+	: m_ptr(nullptr)
+	, m_space(0)
+	, m_len(0)
+{
+	copy_from_raw(&c, 1);
 }
 
 str::~str()
@@ -266,7 +286,7 @@ char &str::operator[](size_t index)
 	return m_ptr[index];
 }
 
-char str::operator[](size_t index) const
+const char &str::operator[](size_t index) const
 {
 	if (index < 0 || index >= len())
 		throw index_exception(index, 0, len() - 1);

@@ -32,7 +32,11 @@ struct str
 	str(const str &other);
 	str(const char *string);
 	str(const char *string, size_t maxlen);
+
+	/* Conversion constructors */
+	str(size_t number);
 	str(int number);
+	str(char c);
 
 	/* Accept anything that can be converted into a string. */
 	template <StringConvertible T>
@@ -74,7 +78,7 @@ struct str
 	/* Returns the character at the given index. May throw index_exception if
 	   `index` is out of bounds. */
 	char &operator[](size_t index);
-	char operator[](size_t index) const;
+	const char &operator[](size_t index) const;
 
 protected:
 	char *m_ptr;
