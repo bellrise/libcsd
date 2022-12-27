@@ -69,3 +69,8 @@ void print(const double val)
 {
 	printf("%lf", val);
 }
+
+void print(const bool val)
+{
+	fputs(val ? "true" : "false", stdout);
+}

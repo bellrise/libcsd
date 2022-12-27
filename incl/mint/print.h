@@ -20,12 +20,7 @@ void print(const long val);
 void print(const unsigned long val);
 void print(const float val);
 void print(const double val);
-
-template <typename T>
-void print(const box<T> &ref)
-{
-	print(*ref);
-}
+void print(const bool val);
 
 template <StringConvertible T>
 void print(const T &value)
