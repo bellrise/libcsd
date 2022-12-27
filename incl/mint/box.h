@@ -3,6 +3,7 @@
 
 #pragma once
 #include <mint/rc.h>
+#include <mint/str.h>
 
 /**
  * @class box<T>
@@ -13,9 +14,8 @@
  *  box<int> number { 12 };
  *  *number = 33;
  *
- * Note that a box _must_ be initialized with a value or another box. Because
- * this is reference counted, a box<T> can be both returned and passed to
- * other functions:
+ * Because this is reference counted, a box<T> can be both returned and passed
+ * to other functions:
  *
  *  box<int> allocate_number(int value)
  *  {
@@ -40,8 +40,10 @@
 template <typename T>
 struct box
 {
-	/* Boxes must be initialized with a value. */
-	box() =delete;
+	box()
+		: m_ptr(new T)
+		, m_arc(new mint::__arc)
+	{ }
 
 	box(T &&moved_value)
 		: m_ptr(new T(moved_value))
@@ -73,6 +75,11 @@ struct box
 			delete m_ptr;
 			delete m_arc;
 		}
+	}
+
+	bool same_reference_as(const box &other) const
+	{
+		return m_ptr == other.m_ptr;
 	}
 
 	box<T> &operator=(box new_box)
@@ -107,6 +114,19 @@ struct box
 	const T *const operator->() const
 	{
 		return m_ptr;
+	}
+
+	bool operator==(const box &other) const
+	{
+		return same_reference_as(other);
+	}
+
+	str to_str() const
+	{
+		char buf[64];
+		snprintf(buf, 64, "<box %p refs=%zu>", m_ptr,
+				mint::__arc_load(*m_arc));
+		return buf;
 	}
 
 private:
