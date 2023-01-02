@@ -2,5 +2,5 @@
 
 meson setup --reconfigure build
 ninja -C build
-cp ./build/libmint.a /usr/local/lib/libmint.a
-cp -r incl/mint /usr/local/include
+cp ./build/libcsd.a /usr/local/lib/libcsd.a
+cp -r incl/libcsd /usr/local/include

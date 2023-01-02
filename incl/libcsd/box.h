@@ -1,9 +1,11 @@
-/* <mint/box.h>
+/* <libcsd/box.h>
    Copyright (c) 2022 bellrise */
 
 #pragma once
-#include <mint/rc.h>
-#include <mint/str.h>
+#include <libcsd/rc.h>
+#include <libcsd/str.h>
+
+#include <stdio.h>
 
 /**
  * @class box<T>
@@ -42,28 +44,33 @@ struct box
 {
 	box()
 		: m_ptr(new T)
-		, m_arc(new mint::__arc)
-	{ }
+		, m_arc(new csd::__arc)
+	{
+		puts("box: create empty");
+	}
 
 	box(T &&moved_value)
 		: m_ptr(new T(moved_value))
-		, m_arc(new mint::__arc)
+		, m_arc(new csd::__arc)
 	{
-		mint::__arc_init(*m_arc, 1);
+		puts("box: created by moving value");
+		csd::__arc_init(*m_arc, 1);
 	}
 
 	box(const T &copy_value)
 		: m_ptr(new T(copy_value))
-		, m_arc(new mint::__arc)
+		, m_arc(new csd::__arc)
 	{
-		mint::__arc_init(*m_arc, 1);
+		puts("box: created by copying value");
+		csd::__arc_init(*m_arc, 1);
 	}
 
-	box(box &other)
+	box(const box &other)
 		: m_ptr(other.m_ptr)
 		, m_arc(other.m_arc)
 	{
-		mint::__arc_inc(*m_arc);
+		puts("box: new reference");
+		csd::__arc_inc(*m_arc);
 	}
 
 	/* Boxes may not be moved. */
@@ -71,9 +78,12 @@ struct box
 
 	~box()
 	{
-		if (!mint::__arc_dec(*m_arc)) {
+		if (!csd::__arc_dec(*m_arc)) {
+			puts("box: actually deleted");
 			delete m_ptr;
 			delete m_arc;
+		} else {
+			puts("box: someone still has a reference");
 		}
 	}
 
@@ -84,14 +94,14 @@ struct box
 
 	box<T> &operator=(box new_box)
 	{
-		if (!mint::__arc_dec(*m_arc)) {
+		if (!csd::__arc_dec(*m_arc)) {
 			delete m_ptr;
 			delete m_arc;
 		}
 
 		m_ptr = new_box.m_ptr;
 		m_arc = new_box.m_arc;
-		mint::__arc_inc(*m_arc);
+		csd::__arc_inc(*m_arc);
 
 		return *this;
 	}
@@ -124,12 +134,11 @@ struct box
 	str to_str() const
 	{
 		char buf[64];
-		snprintf(buf, 64, "<box %p refs=%zu>", m_ptr,
-				mint::__arc_load(*m_arc));
+		snprintf(buf, 64, "<box %p refs=%zu>", m_ptr, csd::__arc_load(*m_arc));
 		return buf;
 	}
 
 private:
 	T *m_ptr;
-	mint::__arc *m_arc;
+	csd::__arc *m_arc;
 };

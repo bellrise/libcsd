@@ -1,8 +1,8 @@
-/* libmint/src/error.cc
+/* libcsd/src/error.cc
    Copyright (c) 2022 bellrise */
 
-#include <mint/error.h>
-#include <mint/str.h>
+#include <libcsd/error.h>
+#include <libcsd/str.h>
 #include <stdlib.h>
 #include <stdio.h>
 

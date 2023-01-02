@@ -1,14 +1,14 @@
-/* <mint/error.h>
+/* <libcsd/error.h>
    Copyright (c) 2022 bellrise */
 
 #pragma once
-#include <mint/str.h>
+#include <libcsd/str.h>
 
 struct str;
 
 /**
  * @exception any_exception
- * The base class for all libmint exceptions, which you can catch
+ * The base class for all libcsd exceptions, which you can catch
  * in a try-catch block, and then call .message() to get a detailed
  * error message. This snippet is an example on how to do so:
  *

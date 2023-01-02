@@ -1,4 +1,4 @@
-/* <mint/str.h>
+/* <libcsd/str.h>
    Copyright (c) 2022 bellrise */
 
 #pragma once

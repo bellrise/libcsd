@@ -1,10 +1,10 @@
-/* <mint/list.h>
+/* <libcsd/list.h>
     Copyright (c) 2022 bellrise */
 
 #pragma once
-#include <mint/detail.h>
-#include <mint/error.h>
-#include <mint/str.h>
+#include <libcsd/detail.h>
+#include <libcsd/error.h>
+#include <libcsd/str.h>
 #include <string.h>
 #include <stddef.h>
 #include <stdlib.h>
@@ -108,7 +108,7 @@ private:
 			new_ptr[i] = old_ptr[i];
 	}
 
-	template <mint::IsMovable P>
+	template <csd::IsMovable P>
 	void copy_objects(P *new_ptr, P *old_ptr, size_t n)
 	{
 		for (size_t i = 0; i < n; i++)

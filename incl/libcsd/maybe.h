@@ -1,8 +1,8 @@
-/* <mint/maybe.h>
+/* <libcsd/maybe.h>
    Copyright (c) 2022 bellrise */
 
 #pragma once
-#include <mint/error.h>
+#include <libcsd/error.h>
 #include <string.h>
 
 /**

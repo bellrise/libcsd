@@ -1,12 +1,12 @@
-/* <mint/detail.h>
+/* <libcsd/detail.h>
     Copyright (c) 2022 bellrise */
 
 #pragma once
 
-#include <mint/print.h>
-namespace mint {
+#include <libcsd/print.h>
+namespace csd {
 
-/* Utilities for the mint library */
+/* Utilities for the csd library */
 
 template <typename T>
 concept IsMovable = requires (T a, T v)

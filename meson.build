@@ -1,4 +1,4 @@
-project('mint', 'cpp', version: '0.1', default_options: ['cpp_std=c++2a'])
+project('csd', 'cpp', version: '0.1', default_options: ['cpp_std=c++2a'])
 fs = import('fs')
 
 sources = [
@@ -8,10 +8,11 @@ sources = [
 ]
 
 includes = include_directories('../incl')
-lib = static_library('mint', sources, include_directories: includes,
+lib = static_library('csd', sources, include_directories: includes,
   cpp_args: ['-O3'], prelink: true, install: true)
 
 # For testing
 if fs.is_file('main.cc')
-  executable('main', 'main.cc', link_with: lib, include_directories: includes)
+  executable('main', 'main.cc', link_with: lib, include_directories: includes,
+    link_args: ['-fsanitize=address'])
 endif

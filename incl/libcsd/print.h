@@ -1,9 +1,9 @@
-/* <mint/print.h>
+/* <libcsd/print.h>
    Copyright (c) 2022 bellrise */
 
 #pragma once
-#include <mint/str.h>
-#include <mint/box.h>
+#include <libcsd/str.h>
+#include <libcsd/box.h>
 
 /* Print functions. */
 

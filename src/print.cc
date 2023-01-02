@@ -1,7 +1,7 @@
-/* libmint/src/print.cc
+/* libcsd/src/print.cc
    Copyright (c) 2022 bellrise */
 
-#include <mint/print.h>
+#include <libcsd/print.h>
 #include <stdio.h>
 
 
