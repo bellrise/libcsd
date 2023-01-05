@@ -3,7 +3,6 @@
 
 #pragma once
 
-#include <libcsd/print.h>
 namespace csd {
 
 /* Utilities for the csd library */
