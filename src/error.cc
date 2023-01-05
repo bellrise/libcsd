@@ -2,10 +2,6 @@
    Copyright (c) 2022 bellrise */
 
 #include <libcsd/error.h>
-#include <libcsd/str.h>
-#include <stdlib.h>
-#include <stdio.h>
-
 
 index_exception::index_exception(int index)
 	: m_has_bounds(false), m_index(index)

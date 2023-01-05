@@ -2,8 +2,6 @@
    Copyright (c) 2022 bellrise */
 
 #include <libcsd/print.h>
-#include <stdio.h>
-
 
 void print(const void *val)
 {

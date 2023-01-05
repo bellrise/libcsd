@@ -2,7 +2,6 @@
    Copyright (c) 2022 bellrise */
 
 #pragma once
-#include <libcsd/str.h>
 #include <libcsd/box.h>
 
 /* Print functions. */
