@@ -44,16 +44,12 @@ struct box
 	box()
 		: m_ptr(new T)
 		, m_arc(new csd::__arc)
-	{
-		puts("box<T>: DON'T USE ME, STILL IN DEVELOPMENT");
-		puts("box: create empty");
-	}
+	{ }
 
 	box(T&& moved_value)
 		: m_ptr(new T(moved_value))
 		, m_arc(new csd::__arc)
 	{
-		puts("box: created by moving value");
 		csd::__arc_init(*m_arc, 1);
 	}
 
@@ -61,7 +57,6 @@ struct box
 		: m_ptr(new T(copy_value))
 		, m_arc(new csd::__arc)
 	{
-		puts("box: created by copying value");
 		csd::__arc_init(*m_arc, 1);
 	}
 
@@ -69,7 +64,6 @@ struct box
 		: m_ptr(other.m_ptr)
 		, m_arc(other.m_arc)
 	{
-		puts("box: new reference");
 		csd::__arc_inc(*m_arc);
 	}
 
@@ -79,11 +73,8 @@ struct box
 	~box()
 	{
 		if (!csd::__arc_dec(*m_arc)) {
-			puts("box: actually deleted");
 			delete m_ptr;
 			delete m_arc;
-		} else {
-			puts("box: someone still has a reference");
 		}
 	}
 
