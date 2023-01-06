@@ -7,6 +7,7 @@
 #include <libcsd/str.h>
 #include <stddef.h>
 #include <string.h>
+#include <stdio.h>
 
 /**
  * @class list<T>
@@ -32,6 +33,25 @@ struct list
 			append(value_array[i]);
 	}
 
+	list(list& copied_list)
+		: m_space(0)
+		, m_len(copied_list.len())
+		, m_ptr(nullptr)
+	{
+		resize(m_len);
+		copy_range(m_ptr, copied_list.m_ptr, m_len);
+	}
+
+	list(list&& moved_list)
+		: m_space(moved_list.m_space)
+		, m_len(moved_list.m_len)
+		, m_ptr(moved_list.m_ptr)
+	{
+		moved_list.m_space = 0;
+		moved_list.m_len = 0;
+		moved_list.m_ptr = nullptr;
+	}
+
 	~list()
 	{
 		delete_range(m_ptr, 0, m_space);
@@ -43,10 +63,17 @@ struct list
 		return m_len;
 	}
 
-	void append(T copied_value)
+	void append(const T& copied_value)
 	{
 		resize(++m_len);
 		m_ptr[m_len - 1] = new T(copied_value);
+	}
+
+	template <csd::IsMovable V>
+	void append(V&& moved_value)
+	{
+		resize(++m_len);
+		m_ptr[m_len - 1] = new T(csd::move(moved_value));
 	}
 
 	void remove(size_t index)
@@ -75,19 +102,10 @@ struct list
 
 	str to_str() const
 	{
-		str builder = '[';
-
-		if (m_len > 1) {
-			for (size_t i = 0; i < len() - 1; i++) {
-				builder += str(*m_ptr[i]) + ", ";
-			}
-			builder += str(*m_ptr[len() - 1]);
-		} else {
-			builder += str(*m_ptr[0]);
-		}
-
-		return builder + ']';
+		return string_repr<T>();
 	}
+
+	/* Operator overloads. */
 
 	T& operator[](size_t index)
 	{
@@ -102,6 +120,59 @@ struct list
 			throw index_exception(index, 0, len() - 1);
 		return *(m_ptr[index]);
 	}
+
+	list& operator+=(const T& thing)
+	{
+		append(thing);
+		return *this;
+	}
+
+	template <csd::IsMovable V>
+	list& operator+=(V&& thing)
+	{
+		append(csd::move(thing));
+		return *this;
+	}
+
+	/* comparable T & V */
+	template <csd::IsComparable<T> V>
+	bool operator==(const list<V>& other) const
+	{
+		if (len() != other.len())
+			return false;
+
+		for (size_t i = 0; i < len(); i++) {
+			if (*m_ptr[i] != other[i])
+				return false;
+		}
+
+		return true;
+	}
+
+	/* non-comparable T & V */
+	template <typename V>
+	bool operator==(const list<V>& other) const
+	{ return false; }
+
+	template <typename V>
+	bool operator<(const list<V>& other) const
+	{ return len() < other.len(); }
+
+	template <typename V>
+	bool operator>(const list<V>& other) const
+	{ return len() > other.len(); }
+
+	template <typename V>
+	bool operator<=(const list<V>& other) const
+	{ return len() <= other.len(); }
+
+	template <typename V>
+	bool operator>=(const list<V>& other) const
+	{ return len() >= other.len(); }
+
+	template <typename V>
+	bool operator!() const
+	{ return !len(); }
 
 private:
 	/* Allocate enough space for n elements. */
@@ -139,16 +210,18 @@ private:
 		m_ptr = new T*[new_size];
 
 		zero_range(m_ptr, 0, new_size);
-		copy_range(m_ptr, old_ptr, m_space);
+		memmove(m_ptr, old_ptr, sizeof(*m_ptr) * m_space);
 
 		delete [] old_ptr;
 		m_space = new_size;
 	}
 
-	inline void copy_range(T **to_ptr, T **from_ptr, size_t n)
+	void copy_range(T **to_ptr, T **from_ptr, size_t n)
 	{
-		for (size_t i = 0; i < n; i++)
-			to_ptr[i] = from_ptr[i];
+		delete_range(to_ptr, 0, n);
+		for (size_t i = 0; i < n; i++) {
+			to_ptr[i] = new T(*from_ptr[i]);
+		}
 	}
 
 	void delete_range(T **ptr, size_t from, size_t to)
@@ -165,6 +238,28 @@ private:
 	{
 		for (size_t i = from; i < to; i++)
 			ptr[i] = nullptr;
+	}
+
+	template <typename U>
+	str string_repr() const
+	{
+		return "[non-printable list]";
+	}
+
+	template <StringConvertible U>
+	str string_repr() const
+	{
+		str builder = '[';
+
+		if (len() == 0)
+			return "[]";
+
+		for (size_t i = 0; i < len() - 1; i++)
+			builder += str(*m_ptr[i]) + ", ";
+
+		builder += str(*m_ptr[len() - 1]);
+
+		return builder + ']';
 	}
 
 	size_t m_space;
