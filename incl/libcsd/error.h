@@ -15,7 +15,7 @@ struct str;
  *
  *  try {
  *      // problematic code
- *  } catch (const any_exception &e) {
+ *  } catch (const any_exception& e) {
  *      println(e.message());
  *  }
  */

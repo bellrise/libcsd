@@ -49,7 +49,7 @@ struct box
 		puts("box: create empty");
 	}
 
-	box(T &&moved_value)
+	box(T&& moved_value)
 		: m_ptr(new T(moved_value))
 		, m_arc(new csd::__arc)
 	{
@@ -57,7 +57,7 @@ struct box
 		csd::__arc_init(*m_arc, 1);
 	}
 
-	box(const T &copy_value)
+	box(const T& copy_value)
 		: m_ptr(new T(copy_value))
 		, m_arc(new csd::__arc)
 	{
@@ -65,7 +65,7 @@ struct box
 		csd::__arc_init(*m_arc, 1);
 	}
 
-	box(const box &other)
+	box(const box& other)
 		: m_ptr(other.m_ptr)
 		, m_arc(other.m_arc)
 	{
@@ -74,7 +74,7 @@ struct box
 	}
 
 	/* Boxes may not be moved. */
-	box(box &&moved) = delete;
+	box(box&& moved) = delete;
 
 	~box()
 	{
@@ -87,12 +87,12 @@ struct box
 		}
 	}
 
-	bool same_reference_as(const box &other) const
+	bool same_reference_as(const box& other) const
 	{
 		return m_ptr == other.m_ptr;
 	}
 
-	box<T> &operator=(box new_box)
+	box<T>& operator=(box new_box)
 	{
 		if (!csd::__arc_dec(*m_arc)) {
 			delete m_ptr;
@@ -106,12 +106,12 @@ struct box
 		return *this;
 	}
 
-	T &operator*()
+	T& operator*()
 	{
 		return *m_ptr;
 	}
 
-	const T &operator*() const
+	const T& operator*() const
 	{
 		return *m_ptr;
 	}
@@ -126,7 +126,7 @@ struct box
 		return m_ptr;
 	}
 
-	bool operator==(const box &other) const
+	bool operator==(const box& other) const
 	{
 		return same_reference_as(other);
 	}
