@@ -2,8 +2,8 @@
    Copyright (c) 2022 bellrise */
 
 #pragma once
+
 #include <libcsd/error.h>
-#include <string.h>
 
 /**
  * @class maybe<T>

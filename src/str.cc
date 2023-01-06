@@ -2,7 +2,6 @@
    Copyright (c) 2022 bellrise */
 
 #include <libcsd/error.h>
-#include <libcsd/str.h>
 #include <string.h>
 #include <stdio.h>
 #include <new>

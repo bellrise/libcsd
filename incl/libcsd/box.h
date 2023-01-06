@@ -2,10 +2,9 @@
    Copyright (c) 2022 bellrise */
 
 #pragma once
+
 #include <libcsd/rc.h>
 #include <libcsd/str.h>
-
-#include <stdio.h>
 
 /**
  * @class box<T>
