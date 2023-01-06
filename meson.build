@@ -13,6 +13,6 @@ lib = static_library('csd', sources, include_directories: includes,
 
 # For testing
 if fs.is_file('main.cc')
-  executable('main', 'main.cc', link_with: lib, include_directories: includes,
+  executable('main', 'main.cc', cpp_args: ['-O3'], link_with: lib, include_directories: includes,
     link_args: ['-fsanitize=address'])
 endif
