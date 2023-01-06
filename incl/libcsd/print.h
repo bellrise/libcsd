@@ -2,13 +2,13 @@
    Copyright (c) 2022 bellrise */
 
 #pragma once
-#include <libcsd/box.h>
+#include <libcsd/str.h>
 
 /* Print functions. */
 
 void print(const void *val);
 void print(const char *val);
-void print(const str &val);
+void print(const str& val);
 void print(const char val);
 void print(const unsigned char val);
 void print(const short val);
@@ -22,7 +22,7 @@ void print(const double val);
 void print(const bool val);
 
 template <StringConvertible T>
-void print(const T &value)
+void print(const T& value)
 {
 	print(value.to_str());
 }

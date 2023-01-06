@@ -2,6 +2,7 @@
    Copyright (c) 2022 bellrise */
 
 #include <libcsd/print.h>
+#include <stdio.h>
 
 void print(const void *val)
 {
@@ -13,7 +14,7 @@ void print(const char *val)
 	printf("%s", val);
 }
 
-void print(const str &val)
+void print(const str& val)
 {
 	val.print();
 }
