@@ -27,7 +27,7 @@ void print(const T* value)
 	print_single(value);
 }
 
-template <StringConvertible T>
+template <ImplementsToString T>
 void print(const T& value)
 {
 	print_single(value.to_str());
