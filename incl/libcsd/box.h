@@ -45,6 +45,7 @@ struct box
 		: m_ptr(new T)
 		, m_arc(new csd::__arc)
 	{
+		puts("box<T>: DON'T USE ME, STILL IN DEVELOPMENT");
 		puts("box: create empty");
 	}
 
