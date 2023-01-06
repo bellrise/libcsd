@@ -66,6 +66,18 @@ str::str(size_t number)
 	copy_from_raw(buf, strlen(buf));
 }
 
+str::str(float number)
+	: m_ptr(nullptr)
+	, m_space(0)
+	, m_len(0)
+{
+	char buf[16];
+	memset(buf, 0, 16);
+
+	snprintf(buf, 16, "%f", number);
+	copy_from_raw(buf, strlen(buf));
+}
+
 str::str(int number)
 	: m_ptr(nullptr)
 	, m_space(0)
