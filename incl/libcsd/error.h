@@ -49,7 +49,19 @@ private:
 struct unpack_exception : public any_exception
 {
 	str message() const override;
+};
+
+/**
+ * @exception nullptr_exception
+ * Expected a value, but found a null pointer.
+ */
+struct nullptr_exception : public any_exception
+{
+	nullptr_exception();
+	nullptr_exception(const str& message);
+
+	str message() const override;
 
 private:
-	str m_type_name;
+	str m_message;
 };

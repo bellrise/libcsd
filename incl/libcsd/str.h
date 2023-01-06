@@ -61,6 +61,7 @@ struct str
 	size_t len() const;
 	str to_str() const;
 	void print() const;
+	bool empty() const;
 
 	/* Returns the index at which the found sub-string starts,
 	   or str::invalid_index if no string is found. */
