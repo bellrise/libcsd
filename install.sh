@@ -4,8 +4,7 @@
 	meson compile -C build
 } || {
 	meson setup build
-	$0
-	exit
+	meson compile -C build
 }
 
 cp ./build/libcsd.a /usr/local/lib/libcsd.a

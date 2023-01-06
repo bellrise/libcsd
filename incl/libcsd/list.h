@@ -4,6 +4,8 @@
 #pragma once
 
 #include <libcsd/detail.h>
+#include <libcsd/str.h>
+#include <stddef.h>
 
 /**
  * @class list<T>
@@ -45,24 +47,23 @@ struct list
 		m_ptr[m_len - 1] = copied_value;
 	}
 
-	void remove(int index)
+	void remove(size_t index)
 	{
 		if (index >= len())
 			throw index_exception(index, 0, len() - 1);
 
 		delete m_ptr[index];
 
-		for (int i = index; i < m_len; i++)
+		for (size_t i = index; i < m_len; i++)
 			m_ptr[i] = m_ptr[i + 1];
 
 		resize(--m_len);
 	}
 
-	template<T>
-	requires std::equality_comparable<T>
-	void remove(T item)
+	template <csd::IsComparable V>
+	void remove(T &item)
 	{
-		for (int i = 0; i < m_len; i++) {
+		for (size_t i = 0; i < m_len; i++) {
 			if (item == m_ptr[i]) {
 				remove(i);
 				return;
