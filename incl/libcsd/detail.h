@@ -13,4 +13,10 @@ concept IsMovable = requires (T a, T v)
 	a = static_cast<T&&>(v);
 };
 
+template <typename T>
+concept IsComparable = requires (T a, T b)
+{
+	a == b;
+};
+
 }
