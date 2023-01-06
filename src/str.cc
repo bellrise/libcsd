@@ -140,8 +140,8 @@ str str::substr(size_t start_index, size_t length)
 
 	/* Clamping the length value for our use case. */
 	if (length + start_index >= len())
-		length = -1;
-	if (length < 0)
+		length = str::invalid_index;
+	if (length == str::invalid_index)
 		length = len() - start_index;
 	if (length == 0)
 		return str();
@@ -292,14 +292,14 @@ bool str::operator==(const str& other) const
 
 char& str::operator[](size_t index)
 {
-	if (index < 0 || index >= len())
+	if (index >= len())
 		throw index_exception(index, 0, len() - 1);
 	return m_ptr[index];
 }
 
 const char& str::operator[](size_t index) const
 {
-	if (index < 0 || index >= len())
+	if (index >= len())
 		throw index_exception(index, 0, len() - 1);
 	return m_ptr[index];
 }
