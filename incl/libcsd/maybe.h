@@ -45,12 +45,12 @@ struct maybe
 		: m_ok(false)
 	{ }
 
-	maybe(const T &copied_value)
+	maybe(const T& copied_value)
 		: m_value(new T(copied_value))
 		, m_ok(true)
 	{ }
 
-	maybe(T &&moved_value)
+	maybe(T&& moved_value)
 		: m_value(new T(moved_value))
 		, m_ok(true)
 	{ }
@@ -72,7 +72,7 @@ struct maybe
 		return static_cast<T&&>(*m_value);
 	}
 
-	void operator=(maybe &) =delete;
+	void operator=(maybe&) =delete;
 
 private:
 	T *m_value;

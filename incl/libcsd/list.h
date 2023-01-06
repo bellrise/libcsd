@@ -61,7 +61,7 @@ struct list
 	}
 
 	template <csd::IsComparable V>
-	void remove(T &item)
+	void remove(T& item)
 	{
 		for (size_t i = 0; i < m_len; i++) {
 			if (item == m_ptr[i]) {
@@ -76,14 +76,14 @@ struct list
 		return str("<list len=") + len() + '>';
 	}
 
-	T &operator[](size_t index)
+	T& operator[](size_t index)
 	{
 		if (index >= len())
 			throw index_exception(index, 0, len() - 1);
 		return m_ptr[index];
 	}
 
-	const T &operator[](size_t index) const
+	const T& operator[](size_t index) const
 	{
 		if (index >= len())
 			throw index_exception(index, 0, len() - 1);

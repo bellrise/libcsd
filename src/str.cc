@@ -13,7 +13,7 @@ str::str()
 {
 }
 
-str::str(const str &other)
+str::str(const str& other)
 	: m_ptr(nullptr)
 	, m_space(0)
 	, m_len(0)
@@ -21,7 +21,7 @@ str::str(const str &other)
 	copy_from(other);
 }
 
-str::str(str &&moved)
+str::str(str&& moved)
 	: m_ptr(moved.m_ptr)
 	, m_space(moved.m_space)
 	, m_len(moved.m_len)
@@ -108,7 +108,7 @@ void str::print() const
 	printf("%.*s", (int) len(), m_ptr);
 }
 
-size_t str::find(const str &substr)
+size_t str::find(const str& substr)
 {
 	if (len() < substr.len())
 		return invalid_index;
@@ -137,7 +137,7 @@ str str::substr(size_t start_index, size_t length)
 	return str(m_ptr + start_index, length);
 }
 
-str &str::replace(char from, char to)
+str& str::replace(char from, char to)
 {
 	for (size_t i = 0; i < m_len; i++) {
 		if (m_ptr[i] == from)
@@ -147,7 +147,7 @@ str &str::replace(char from, char to)
 	return *this;
 }
 
-str &str::append(const str &next)
+str& str::append(const str& next)
 {
 	size_t old_len = len();
 	size_t bytes_to_copy = next.len();
@@ -166,7 +166,7 @@ str &str::append(const str &next)
 	return *this;
 }
 
-str &str::append(const char *next)
+str& str::append(const char *next)
 {
 	size_t old_len = len();
 	size_t next_len = strlen(next);
@@ -186,7 +186,7 @@ str &str::append(const char *next)
 	return *this;
 }
 
-void str::copy_from(const str &other)
+void str::copy_from(const str& other)
 {
 	size_t required_bytes = other.len() + 1;
 
@@ -225,7 +225,7 @@ size_t str::resize(size_t nbytes)
 
 	try {
 		m_ptr = new char[nbytes+1];
-	} catch (std::bad_alloc &v) {
+	} catch (std::bad_alloc& v) {
 		return m_space;
 	}
 
@@ -237,55 +237,55 @@ size_t str::resize(size_t nbytes)
 	return m_space;
 }
 
-str &str::operator=(const str &other)
+str& str::operator=(const str& other)
 {
 	copy_from(other);
 	return *this;
 }
 
-str &str::operator=(const char *other)
+str& str::operator=(const char *other)
 {
 	copy_from_raw(other, strlen(other));
 	return *this;
 }
 
-str &str::operator+(const str &next)
+str& str::operator+(const str& next)
 {
 	append(next);
 	return *this;
 }
 
-str &str::operator+(const char *next)
+str& str::operator+(const char *next)
 {
 	append(next);
 	return *this;
 }
 
-str &str::operator+=(const str &next)
+str& str::operator+=(const str& next)
 {
 	append(next);
 	return *this;
 }
 
-str &str::operator+=(const char *next)
+str& str::operator+=(const char *next)
 {
 	append(next);
 	return *this;
 }
 
-bool str::operator==(const str &other) const
+bool str::operator==(const str& other) const
 {
 	return len() == other.len() && !strncmp(m_ptr, other.m_ptr, len());
 }
 
-char &str::operator[](size_t index)
+char& str::operator[](size_t index)
 {
 	if (index < 0 || index >= len())
 		throw index_exception(index, 0, len() - 1);
 	return m_ptr[index];
 }
 
-const char &str::operator[](size_t index) const
+const char& str::operator[](size_t index) const
 {
 	if (index < 0 || index >= len())
 		throw index_exception(index, 0, len() - 1);
