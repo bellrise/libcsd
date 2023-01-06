@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <libcsd/detail.h>
 #include <libcsd/error.h>
 
 /**
@@ -69,7 +70,7 @@ struct maybe
 	{
 		if (!is_ok())
 			throw unpack_exception();
-		return static_cast<T&&>(*m_value);
+		return csd::move(*m_value);
 	}
 
 	void operator=(maybe&) =delete;
