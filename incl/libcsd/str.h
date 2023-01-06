@@ -36,6 +36,7 @@ struct str
 
 	/* Conversion constructors */
 	str(size_t number);
+	str(float number);
 	str(int number);
 	str(char c);
 
@@ -43,6 +44,12 @@ struct str
 	template <StringConvertible T>
 	str(const T& object)
 		: str(object.to_str())
+	{ }
+
+	/* Incompatible types will turn into <type>. */
+	template <typename T>
+	str (const T& object)
+		: str("<type>")
 	{ }
 
 	~str();

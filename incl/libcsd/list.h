@@ -36,7 +36,7 @@ struct list
 		delete [] m_ptr;
 	}
 
-	size_t len() const
+	inline size_t len() const
 	{
 		return m_len;
 	}
@@ -52,18 +52,16 @@ struct list
 		if (index >= len())
 			throw index_exception(index, 0, len() - 1);
 
-		delete m_ptr[index];
-
-		for (size_t i = index; i < m_len; i++)
+		for (size_t i = index; i < len(); i++)
 			m_ptr[i] = m_ptr[i + 1];
 
 		resize(--m_len);
 	}
 
-	template <csd::IsComparable V>
-	void remove(T& item)
+	template <csd::IsComparable<T> V>
+	void remove(V& item)
 	{
-		for (size_t i = 0; i < m_len; i++) {
+		for (size_t i = 0; i < len(); i++) {
 			if (item == m_ptr[i]) {
 				remove(i);
 				return;
@@ -73,7 +71,18 @@ struct list
 
 	str to_str() const
 	{
-		return str("<list len=") + len() + '>';
+		str builder = '[';
+
+		if (m_len > 1) {
+			for (size_t i = 0; i < len() - 1; i++) {
+				builder += str(m_ptr[i]) + ", ";
+			}
+			builder += str(m_ptr[len() - 1]);
+		} else {
+			builder += str(m_ptr[0]);
+		}
+
+		return builder + ']';
 	}
 
 	T& operator[](size_t index)
@@ -96,6 +105,11 @@ private:
 	{
 		if (m_space >= n)
 			return;
+
+		// TODO: there is way too many deletes for any T, especially if there is
+		//       any dynamic memory allocated. list<T> should be changed to store
+		//       an array of pointers, and not an array of elements (along with that,
+		//       this function will be simpler)
 
 		/* Allocate to the nearest power of 2, or 1024 elements if the total
 		   required size is over 1024. This will ensure a small memory footprint
