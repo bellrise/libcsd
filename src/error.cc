@@ -30,3 +30,18 @@ str unpack_exception::message() const
 	err += "maybe<T>, but no value was present";
 	return err;
 }
+
+nullptr_exception::nullptr_exception()
+	: m_message("nullptr_exception: expected value, found null pointer")
+{ }
+
+nullptr_exception::nullptr_exception(const str& message)
+	: m_message("nullptr_exception: ")
+{
+	m_message += message;
+}
+
+str nullptr_exception::message() const
+{
+	return m_message;
+}

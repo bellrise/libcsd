@@ -120,6 +120,11 @@ void str::print() const
 	printf("%.*s", (int) len(), m_ptr);
 }
 
+bool str::empty() const
+{
+	return len() == 0;
+}
+
 size_t str::find(const str& substr)
 {
 	if (len() < substr.len())
