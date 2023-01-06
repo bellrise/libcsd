@@ -8,16 +8,25 @@
 struct str;
 
 /**
- * @concept StringConvertible
- * Any type that can be converted to a `str`. Any type returned by T::to_str()
- * passable to the str::str() constructor is also convertable to a string.
- * This means that your to_str() method does not need to return a str, but can
- * instead return a const char*.
+ * @concept ImplementsToString
+ * Any type that implements the to_str() method, which may return str or
+ * any other str-constructible type.
  */
 template <typename T>
-concept StringConvertible = requires (T t)
+concept ImplementsToString = requires (T t)
 {
 	static_cast<str>(t.to_str());
+};
+
+/**
+ * @concept StringConvertible
+ * Any type that can be converted to a `str`. Accepts types that have a
+ * .to_str() method or can be passed into one of the str constructors.
+ */
+template <typename T>
+concept StringConvertible = ImplementsToString<T> || requires (T t)
+{
+	static_cast<str>(t);
 };
 
 /**
@@ -41,15 +50,9 @@ struct str
 	str(char c);
 
 	/* Accept anything that can be converted into a string. */
-	template <StringConvertible T>
+	template <ImplementsToString T>
 	str(const T& object)
 		: str(object.to_str())
-	{ }
-
-	/* Incompatible types will turn into <type>. */
-	template <typename T>
-	str (const T& object)
-		: str("<type>")
 	{ }
 
 	~str();
