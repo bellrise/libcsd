@@ -4,72 +4,72 @@
 #include <libcsd/print.h>
 #include <stdio.h>
 
-void print(const void *val)
+void print_single(const void *val)
 {
 	printf("%p", val);
 }
 
-void print(const char *val)
+void print_single(const char *val)
 {
 	printf("%s", val);
 }
 
-void print(const str& val)
+void print_single(const str& val)
 {
 	val.print();
 }
 
-void print(const char val)
+void print_single(const char val)
 {
 	printf("%c", val);
 }
 
-void print(const unsigned char val)
+void print_single(const unsigned char val)
 {
 	printf("%uc", val);
 }
 
-void print(const short val)
+void print_single(const short val)
 {
 	printf("%d", val);
 }
 
-void print(const unsigned short val)
+void print_single(const unsigned short val)
 {
 	printf("%ud", val);
 }
 
-void print(const int val)
+void print_single(const int val)
 {
 	printf("%d", val);
 }
 
-void print(const unsigned int val)
+void print_single(const unsigned int val)
 {
 	printf("%du", val);
 }
 
-void print(const long val)
+void print_single(const long val)
 {
 	printf("%ld", val);
 }
 
-void print(const unsigned long val)
+void print_single(const unsigned long val)
 {
 	printf("%lu", val);
 }
 
-void print(const float val)
+void print_single(const float val)
 {
 	printf("%f", val);
 }
 
-void print(const double val)
+void print_single(const double val)
 {
 	printf("%lf", val);
 }
 
-void print(const bool val)
+void print_single(const bool val)
 {
 	fputs(val ? "true" : "false", stdout);
 }
