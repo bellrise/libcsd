@@ -1,5 +1,5 @@
 /* <libcsd/list.h>
-    Copyright (c) 2022 bellrise */
+    Copyright (c) 2022-2023 bellrise */
 
 #pragma once
 
@@ -83,7 +83,7 @@ struct list
 	void remove(size_t index)
 	{
 		if (index >= len())
-			throw index_exception(index, 0, len() - 1);
+			throw csd::index_exception(index, 0, len() - 1);
 
 		delete m_ptr[index];
 
@@ -104,7 +104,7 @@ struct list
 
 		for (size_t i = 0; i < indices.len(); i++) {
 			if (indices[i] >= len())
-				throw index_exception(i, 0, len() - 1);
+				throw csd::index_exception(i, 0, len() - 1);
 
 			delete m_ptr[indices[i]];
 			m_ptr[indices[i]] = nullptr;
@@ -154,7 +154,7 @@ struct list
 	 * The lambda in this case only returns true if the number is smaller
 	 * than 3, meaning only { 1, 2 } will be kept from the initial list.
 	 */
-	list<T>& filter(const filter_consumer& consumer)
+	list<T>& filter(filter_consumer consumer)
 	{
 		list<size_t> to_remove;
 
@@ -173,7 +173,7 @@ struct list
 	 * similarly to the filter consumer using a lambda, but the argument passed
 	 * is of type `T&`, which can be modified.
 	 */
-	list<T>& apply(const apply_consumer& consumer)
+	list<T>& apply(apply_consumer consumer)
 	{
 		for (T& item : *this)
 			consumer(item);
@@ -183,14 +183,14 @@ struct list
 	T& at(size_t index)
 	{
 		if (index >= len())
-			throw index_exception(index, 0, len() - 1);
+			throw csd::index_exception(index, 0, len() - 1);
 		return *(m_ptr[index]);
 	}
 
 	const T& at(size_t index) const
 	{
 		if (index >= len())
-			throw index_exception(index, 0, len() - 1);
+			throw csd::index_exception(index, 0, len() - 1);
 		return *(m_ptr[index]);
 	}
 

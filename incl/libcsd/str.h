@@ -1,5 +1,5 @@
 /* <libcsd/str.h>
-   Copyright (c) 2022 bellrise */
+   Copyright (c) 2022-2023 bellrise */
 
 #pragma once
 
@@ -68,14 +68,20 @@ struct str
 	void print() const;
 	bool empty() const;
 
-	/* Returns the index at which the found sub-string starts,
-	   or str::invalid_index if no string is found. */
+	/**
+	 * @method find
+	 * Returns the index at which the found sub-string starts,
+	 * or str::invalid_index if no string is found.
+	 */
 	size_t find(const str& substr);
 
-	/* As in any popular language, substr() returns a slice of the string
-	   starting at `start_index`, and continuing for `length` bytes. An invalid
-	   set of arguments will just return an empty string. The default `length`
-	   will collect to the end of the string. */
+	/**
+	 * @method substr
+	 * As in any popular language, substr() returns a slice of the string
+	 * starting at `start_index`, and continuing for `length` bytes. An invalid
+	 * set of arguments will just return an empty string. The default `length`
+	 * will collect to the end of the string.
+	 */
 	str substr(size_t start_index, size_t length = -1);
 
 	/* Chain-modify methods */
@@ -92,8 +98,11 @@ struct str
 	str& operator+=(const char *next);
 	bool operator==(const str& other) const;
 
-	/* Returns the character at the given index. May throw index_exception if
-	   `index` is out of bounds. */
+	/**
+	 * @method []
+	 * Returns the character at the given index. May throw index_exception if
+	 * `index` is out of bounds.
+	 */
 	char& operator[](size_t index);
 	const char& operator[](size_t index) const;
 

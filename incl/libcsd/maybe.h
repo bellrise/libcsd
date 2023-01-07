@@ -1,5 +1,5 @@
 /* <libcsd/maybe.h>
-   Copyright (c) 2022 bellrise */
+   Copyright (c) 2022-2023 bellrise */
 
 #pragma once
 
@@ -12,8 +12,8 @@
  * a value but may possibly fail, in which case they return an empty maybe<T>,
  * notifying the caller about an error.
  *
- *	maybe<int> to_int(str string)  // we may return an int
- *	{
+ *  maybe<int> to_int(str string)  // we may return an int
+ *  {
  *      int parsed_int = 0;
  *      bool failed_to_parse;
  *
@@ -22,10 +22,10 @@
  *      if (failed_to_parse)       // if something fails, return an empty
  *          return {};             // `maybe<int> {}` signifying an error
  *      return parsed_int;         // otherwise, just return a regular value
- *	}
+ *  }
  *
- *	void f()
- *	{
+ *  void f()
+ *  {
  *      maybe value = to_int("ding dong");
  *
  *      if (value.is_ok()) {
@@ -33,7 +33,7 @@
  *      } else {
  *          println("Failed to parse int");
  *      }
- *	}
+ *  }
  *
  * If a value is returned, maybe<T>.is_ok() will return true, which means the
  * value may be safely unpacked. If is_ok() returns false and the user still
@@ -69,7 +69,7 @@ struct maybe
 	T&& unpack()
 	{
 		if (!is_ok())
-			throw unpack_exception();
+			throw csd::unpack_exception();
 		return csd::move(*m_value);
 	}
 

@@ -1,11 +1,14 @@
 /* <libcsd/error.h>
-   Copyright (c) 2022 bellrise */
+   Copyright (c) 2022-2023 bellrise */
 
 #pragma once
 
 #include <libcsd/str.h>
 
 struct str;
+
+namespace csd
+{
 
 /**
  * @exception any_exception
@@ -15,7 +18,7 @@ struct str;
  *
  *  try {
  *      // problematic code
- *  } catch (const any_exception& e) {
+ *  } catch (const csd::any_exception& e) {
  *      println(e.message());
  *  }
  */
@@ -65,3 +68,5 @@ struct nullptr_exception : public any_exception
 private:
 	str m_message;
 };
+
+}

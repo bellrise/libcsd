@@ -1,5 +1,5 @@
 /* libcsd/src/str.cc
-   Copyright (c) 2022 bellrise */
+   Copyright (c) 2022-2023 bellrise */
 
 #include <libcsd/error.h>
 #include <string.h>
@@ -298,13 +298,13 @@ bool str::operator==(const str& other) const
 char& str::operator[](size_t index)
 {
 	if (index >= len())
-		throw index_exception(index, 0, len() - 1);
+		throw csd::index_exception(index, 0, len() - 1);
 	return m_ptr[index];
 }
 
 const char& str::operator[](size_t index) const
 {
 	if (index >= len())
-		throw index_exception(index, 0, len() - 1);
+		throw csd::index_exception(index, 0, len() - 1);
 	return m_ptr[index];
 }
