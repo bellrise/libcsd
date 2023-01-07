@@ -1,7 +1,9 @@
 /* libcsd/src/error.cc
-   Copyright (c) 2022 bellrise */
+   Copyright (c) 2022-2023 bellrise */
 
 #include <libcsd/error.h>
+
+namespace csd {
 
 index_exception::index_exception(int index)
 	: m_has_bounds(false), m_index(index)
@@ -44,4 +46,6 @@ nullptr_exception::nullptr_exception(const str& message)
 str nullptr_exception::message() const
 {
 	return m_message;
+}
+
 }

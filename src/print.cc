@@ -1,8 +1,10 @@
 /* libcsd/src/print.cc
-   Copyright (c) 2022 bellrise */
+   Copyright (c) 2022-2023 bellrise */
 
 #include <libcsd/print.h>
 #include <stdio.h>
+
+namespace csd {
 
 void print_single(const void *val)
 {
@@ -72,4 +74,6 @@ void print_single(const double val)
 void print_single(const bool val)
 {
 	fputs(val ? "true" : "false", stdout);
+}
+
 }

@@ -1,10 +1,13 @@
 /* <libcsd/print.h>
-   Copyright (c) 2022 bellrise */
+   Copyright (c) 2022-2023 bellrise */
 
 #pragma once
 #include <libcsd/str.h>
 
 /* Print functions. */
+
+namespace csd
+{
 
 void print_single(const void *val);
 void print_single(const char *val);
@@ -21,16 +24,18 @@ void print_single(const float val);
 void print_single(const double val);
 void print_single(const bool val);
 
+}
+
 template <typename T>
 void print(const T* value)
 {
-	print_single(value);
+	csd::print_single(value);
 }
 
 template <csd::ImplementsToString T>
 void print(const T& value)
 {
-	print_single(value.to_str());
+	csd::print_single(value.to_str());
 }
 
 /* Multiple-argument print() functions. */
@@ -38,10 +43,10 @@ void print(const T& value)
 template <typename T, typename... VT>
 void print(const T& value, const VT&... values)
 {
-	print_single(value);
+	csd::print_single(value);
 
 	if constexpr (sizeof...(values) != 0) {
-		print_single(' ');
+		csd::print_single(' ');
 		print(values...);
 	}
 }
@@ -49,12 +54,12 @@ void print(const T& value, const VT&... values)
 template <typename T, typename... VT>
 void println(const T& value, const VT&... values)
 {
-	print_single(value);
+	csd::print_single(value);
 
 	if constexpr (sizeof...(values) != 0) {
-		print_single(' ');
+		csd::print_single(' ');
 		print(values...);
 	}
 
-	print_single('\n');
+	csd::print_single('\n');
 }

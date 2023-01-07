@@ -1,5 +1,5 @@
 /* <libcsd/detail.h>
-    Copyright (c) 2022 bellrise */
+    Copyright (c) 2022-2023 bellrise */
 
 #pragma once
 
