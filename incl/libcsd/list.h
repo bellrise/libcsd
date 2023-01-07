@@ -18,6 +18,7 @@ template <typename T>
 struct list
 {
 	using filter_consumer = routine<bool, const T&>;
+	using apply_consumer = routine<void, T&>;
 
 	list()
 		: m_space(0)
@@ -36,7 +37,7 @@ struct list
 			append(value_array[i]);
 	}
 
-	list(list& copied_list)
+	list(const list& copied_list)
 		: m_space(0)
 		, m_len(copied_list.len())
 		, m_ptr(nullptr)
@@ -166,6 +167,19 @@ struct list
 		return *this;
 	}
 
+	/**
+	 * @method apply
+	 * Apply a change to each element, using an apply_consumer. May be used
+	 * similarly to the filter consumer using a lambda, but the argument passed
+	 * is of type `T&`, which can be modified.
+	 */
+	list<T>& apply(const apply_consumer& consumer)
+	{
+		for (T& item : *this)
+			consumer(item);
+		return *this;
+	}
+
 	T& at(size_t index)
 	{
 		if (index >= len())
@@ -186,6 +200,11 @@ struct list
 	}
 
 	/* Operator overloads. */
+
+	list<T>& operator=(const list<T>& other)
+	{
+		return this(other);
+	}
 
 	T& operator[](size_t index)
 	{
@@ -249,6 +268,51 @@ struct list
 	template <typename V>
 	bool operator!() const
 	{ return !len(); }
+
+	struct iterator
+	{
+		using value_type = T;
+		using pointer = T*;
+		using reference = T&;
+
+		iterator(T** ptr)
+			: m_ptr(ptr)
+		{ }
+
+		reference operator*() const
+		{ return **m_ptr; }
+
+		pointer operator->()
+		{ return *m_ptr; }
+
+		iterator& operator++()
+		{
+			m_ptr++;
+			return *this;
+		}
+
+		iterator operator++(int)
+		{ (*this)->operator++(); }
+
+		friend bool operator==(const iterator& a, const iterator& b)
+		{ return a.m_ptr == b.m_ptr; }
+
+		friend bool operator!=(const iterator& a, const iterator& b)
+		{ return a.m_ptr != b.m_ptr; }
+
+	private:
+		pointer *m_ptr;
+	};
+
+	iterator begin()
+	{
+		return iterator(&m_ptr[0]);
+	}
+
+	iterator end()
+	{
+		return iterator(&m_ptr[len()]);
+	}
 
 private:
 	/* Allocate enough space for n elements. */
