@@ -386,7 +386,7 @@ private:
 		return "[non-printable list]";
 	}
 
-	template <StringConvertible U>
+	template <csd::StringConvertible U>
 	str string_repr() const
 	{
 		str builder = '[';
