@@ -76,5 +76,4 @@ constexpr inline base_type<T>&& move(T&& thing)
 	return static_cast<base_type<T>&&>(thing);
 }
 
-
 }

@@ -7,6 +7,9 @@
 
 struct str;
 
+namespace csd
+{
+
 /**
  * @concept ImplementsToString
  * Any type that implements the to_str() method, which may return str or
@@ -29,6 +32,8 @@ concept StringConvertible = ImplementsToString<T> || requires (T t)
 	static_cast<str>(t);
 };
 
+}
+
 /**
  * @class str
  * Heap-allocated string.
@@ -50,7 +55,7 @@ struct str
 	str(char c);
 
 	/* Accept anything that can be converted into a string. */
-	template <ImplementsToString T>
+	template <csd::ImplementsToString T>
 	str(const T& object)
 		: str(object.to_str())
 	{ }
