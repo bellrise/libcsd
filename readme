@@ -42,3 +42,28 @@ Requirements:
 This command will compile & install the library and headers into /usr/local:
 
 	# ./install.sh
+
+
+Library
+-------
+
+The generic symbols in the library are in the global namespace, and only the
+implementation details can be found in the csd:: namespace. Note that there is
+nothing against using the symbols in the csd:: namespace, as many of them are
+only there to not clutter the global namespace, and are not actually details.
+
+Global symbols exposed by the library:
+	box<T>                  heap allocated T
+	list<T>                 dynamically resized array
+	maybe<T>                possibly a value, used as a return type
+	routine<R, ...P>        thin wrapper around a function pointer
+	str                     basic string
+	print()                 print n things
+	println()               print n things, followed by a newline
+
+All types are implemented using POSIX libc without any STL symbols or includes
+apart from one detail type, being csd::__arc, which is a atomic reference
+counter implemented using std::atomic.
+
+For more information about the types, see the comment blocks above their
+declarations in their respective header files.

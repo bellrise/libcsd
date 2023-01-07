@@ -1,5 +1,5 @@
 /* <libcsd/box.h>
-   Copyright (c) 2022 bellrise */
+   Copyright (c) 2022-2023 bellrise */
 
 #pragma once
 
@@ -23,10 +23,10 @@
  *      return box<int> { value };
  *  }
  *
- *	void modify(box<int> number)
- *	{
+ *  void modify(box<int> number)
+ *  {
  *      *number = 66;
- *	}
+ *  }
  *
  *  void f()
  *  {
