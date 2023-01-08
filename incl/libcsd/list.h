@@ -80,7 +80,7 @@ struct list
 		m_ptr[m_len - 1] = new T(csd::move(moved_value));
 	}
 
-	void remove(size_t index)
+	void remove(int index)
 	{
 		if (index >= len())
 			throw csd::index_exception(index, 0, len() - 1);
