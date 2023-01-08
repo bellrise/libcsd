@@ -3,13 +3,8 @@
 
 #pragma once
 
-#include "libcsd/error.h"
-#include "libcsd/iterator.h"
-#include <stdlib.h>
 #include <libcsd/list.h>
-#include <libcsd/str.h>
 #include <libcsd/maybe.h>
-#include <strings.h>
 
 /**
  * @class map<T, U>
@@ -261,7 +256,8 @@ public:
 		return *this;
 	}
 
-	bool operator==(map<T, U> other)
+	template <csd::IsComparable<T> K, csd::IsComparable<U> V>
+	bool operator==(map<K, V> other)
 	{
 		if (m_len != other.len())
 			return false;
