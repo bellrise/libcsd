@@ -5,8 +5,6 @@
 
 #include <libcsd/str.h>
 
-struct str;
-
 namespace csd
 {
 
