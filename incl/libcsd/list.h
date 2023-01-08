@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <libcsd/iterator.h>
 #include <libcsd/routine.h>
 #include <libcsd/detail.h>
 #include <libcsd/str.h>
@@ -19,6 +20,8 @@ struct list
 {
 	using filter_consumer = routine<bool, const T&>;
 	using apply_consumer = routine<void, T&>;
+	using iterator = csd::iterator<T, T**, T&>;
+	using const_iterator = csd::iterator<T, T**, const T&>;
 
 	list()
 		: m_space(0)
@@ -58,8 +61,7 @@ struct list
 
 	~list()
 	{
-		delete_range(m_ptr, 0, m_space);
-		delete [] m_ptr;
+		clear();
 	}
 
 	inline size_t len() const
@@ -67,17 +69,25 @@ struct list
 		return m_len;
 	}
 
-	void append(const T& copied_value)
+	list& append(const T& copied_value)
 	{
 		resize(++m_len);
 		m_ptr[m_len - 1] = new T(copied_value);
+		return *this;
 	}
 
 	template <csd::IsMovable V>
-	void append(V&& moved_value)
+	list& append(V&& moved_value)
 	{
 		resize(++m_len);
 		m_ptr[m_len - 1] = new T(csd::move(moved_value));
+		return *this;
+	}
+
+	list& extend(const list& other_list)
+	{
+		for (const T& elem : other_list)
+			append(elem);
 	}
 
 	void remove(size_t index)
@@ -134,6 +144,16 @@ struct list
 				return;
 			}
 		}
+	}
+
+	void clear()
+	{
+		delete_range(m_ptr, 0, m_len);
+		delete [] m_ptr;
+
+		m_ptr = nullptr;
+		m_len = 0;
+		m_space = 0;
 	}
 
 	/**
@@ -269,50 +289,17 @@ struct list
 	bool operator!() const
 	{ return !len(); }
 
-	struct iterator
-	{
-		using value_type = T;
-		using pointer = T*;
-		using reference = T&;
-
-		iterator(T** ptr)
-			: m_ptr(ptr)
-		{ }
-
-		reference operator*() const
-		{ return **m_ptr; }
-
-		pointer operator->()
-		{ return *m_ptr; }
-
-		iterator& operator++()
-		{
-			m_ptr++;
-			return *this;
-		}
-
-		iterator operator++(int)
-		{ (*this)->operator++(); }
-
-		friend bool operator==(const iterator& a, const iterator& b)
-		{ return a.m_ptr == b.m_ptr; }
-
-		friend bool operator!=(const iterator& a, const iterator& b)
-		{ return a.m_ptr != b.m_ptr; }
-
-	private:
-		pointer *m_ptr;
-	};
-
 	iterator begin()
-	{
-		return iterator(&m_ptr[0]);
-	}
+	{ return iterator(&m_ptr[0]); }
 
 	iterator end()
-	{
-		return iterator(&m_ptr[len()]);
-	}
+	{ return iterator(&m_ptr[len()]); }
+
+	const_iterator begin() const
+	{ return const_iterator(&m_ptr[0]); }
+
+	const_iterator end() const
+	{ return const_iterator(&m_ptr[len()]); }
 
 private:
 	/* Allocate enough space for n elements. */

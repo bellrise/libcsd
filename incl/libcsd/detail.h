@@ -23,13 +23,37 @@ template <typename T>
 struct base_type_s<T&&>
 { using type = T; };
 
+template <typename T>
+struct base_type_s<T*>
+{ using type = T; };
+
+template <typename T>
+struct base_type_s<T**>
+{ using type = T; };
+
 /**
  * @type base_type<T>
- * Returns the base type of T, removing any references. For example,
+ * Returns the base type of T, removing any pointer and reference.
  * base_type<int&&> will return int.
  */
 template <typename T>
 using base_type = typename base_type_s<T>::type;
+
+template <typename T>
+struct remove_const_s
+{ using type = T; };
+
+template <typename T>
+struct remove_const_s<const T>
+{ using type = T; };
+
+/**
+ * @type base_type<T>
+ * Returns the base type of T, removing any const.
+ * remove_const<const int> will return int.
+ */
+template <typename T>
+using remove_const = typename remove_const_s<T>::type;
 
 template <typename T, typename U>
 struct same_type_s : false_result { };
