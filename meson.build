@@ -13,6 +13,12 @@ lib = static_library('csd', sources, include_directories: includes,
 
 # For testing
 if fs.is_file('main.cc')
-  executable('main', 'main.cc', cpp_args: ['-O3'], link_with: lib, include_directories: includes,
-    link_args: ['-fsanitize=address', '-Wall', '-Wextra'])
+  cpp = meson.get_compiler('cpp')
+  if cpp.get_id() == 'clang'
+    executable('main', 'main.cc', cpp_args: ['-O3'], link_with: lib, include_directories: includes,
+      link_args: ['-fsanitize=address', '-Wall', '-Wextra'])
+  else
+    executable('main', 'main.cc', cpp_args: ['-O3'], link_with: lib, include_directories: includes,
+      link_args: ['-Wall', '-Wextra'])
+  endif
 endif
