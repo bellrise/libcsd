@@ -10,3 +10,4 @@
 #include <libcsd/maybe.h>
 #include <libcsd/rc.h>
 #include <libcsd/str.h>
+#include <libcsd/format.h>
