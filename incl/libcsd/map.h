@@ -4,8 +4,11 @@
 #pragma once
 
 #include "libcsd/error.h"
+#include "libcsd/iterator.h"
+#include <stdlib.h>
 #include <libcsd/list.h>
-#include <libcsd/detail.h>
+#include <libcsd/str.h>
+#include <libcsd/maybe.h>
 #include <strings.h>
 
 /**
@@ -14,91 +17,165 @@
  */
 template <typename T, typename U>
 struct map {
-	list<T> m_keys;
-	list<U> m_values;
+	struct pair;
+
+private:
+	list<pair> m_pairs;
 	size_t m_len = 0;
+	using iterator = typename list<pair>::iterator;
+	using const_iterator = typename list<pair>::const_iterator;
 
 public:
+	struct pair
+	{
+		T key;
+		U value;
+
+		str to_str() const
+		{
+			str ret;
+
+			ret.append("{ ");
+			ret.append(key);
+			ret.append(": ");
+			ret.append(value);
+			ret.append(" }");
+
+			return ret;
+		}
+	};
+
 	inline size_t len()
 	{
 		return m_len;
 	}
 
-	inline list<T> keys()
-	{
-		return m_keys;
-	}
-
-	inline list<U> values()
-	{
-		return m_values;
-	}
-
-	inline map<T, U> copy()
-	{
-		return this;
-	}
-
-	map() {}
+	map() = default;
 
 	map(T key, U value)
 	{
 		append(key, value);
 	}
 
-	template <csd::IsComparable<T> V>
-	map<T, U> fromkeys(list<V> keys)
+	template<typename ...VT>
+	map(VT ...args)
 	{
-		map<T, U> kv;
+		append(args...);
+	}
 
-		for (int i = 0; i < m_len; i++)
-			kv.append(m_keys[i], nullptr);
+	list<T> keys()
+	{
+		list<T> keys;
 
-		return kv;
+		for (pair p : m_pairs)
+			keys.append(p.key);
+
+		return keys;
+	}
+
+	list<U> values()
+	{
+		list<U> values;
+
+		for (pair p : m_pairs)
+			values.append(p.value);
+
+		return values;
+	}
+
+	list<pair> items()
+	{
+		return m_pairs;
 	}
 
 	template <csd::IsComparable<T> V>
-	void update(V key, U value)
+	bool has_key(const V& key)
 	{
-		for (int i = 0; i < m_len; i++)
-			if (key == m_keys[i])
-				m_values[i] = value;
+		for (int i = 0; i < this->len(); i++)
+			if (m_pairs[i].key == key)
+				return true;
+
+		return false;
 	}
 
 	void clear()
 	{
-		for (int i = 0; i < m_len; i++) {
-			remove(i);
+		for (int i = 0; i < m_len - 1; i++) {
+			m_pairs.remove(i);
 		}
 
 		m_len = 0;
 	}
 
 	template <csd::IsComparable<T> V>
-	U pop(const V& key)
+	void update(V key, U value)
 	{
-		U value = get(key);
-		remove(key);
-		return value;
+		for (pair p : m_pairs)
+			if (p.key == key)
+				p.value = value;
 	}
 
-	map<T, U> popitem()
+	void append(T key, U value)
 	{
-		map<T, U> kv;
-		kv.append(m_keys[0], m_values[0]);
-		remove(0);
-		return kv;
+		if (has_key(key)) {
+			update(key, value);
+		} else {
+			m_pairs.append({ key, value });
+			m_len++;
+		}
+	}
+
+	template<typename... Rest>
+	void append(T key, U value, Rest... rest)
+	{
+		append(key, value);
+
+		if (sizeof...(rest) >= 2)
+			append(rest...);
+	}
+	void remove(int index)
+	{
+		if (index >= m_len)
+			throw csd::index_exception(index, 0, len() - 1);
+
+		m_pairs.remove(index);
+		m_len--;
 	}
 
 	template <csd::IsComparable<T> V>
-	bool has_key(const V& key)
+	void remove(const V& key)
 	{
-		for (int i = 0; i < m_len; i++) {
-			if (m_keys[i] == key)
-				return true;
-		}
+		for (int i = 0; i < m_len; i++)
+			if (m_pairs[i].key == key)
+				remove(i);
+	}
 
-		return false;
+	template<csd::IsComparable<T> V, typename... Rest>
+	void remove(const V& key, Rest... rest)
+	{
+		remove(key);
+
+		if (sizeof...(rest) >= 1)
+			remove(rest...);
+	}
+
+	template <csd::IsComparable<T> V>
+	maybe<U> get(const V& key)
+	{
+		for (pair p : m_pairs)
+			if (p.key == key)
+				return p.value;
+
+
+		return {};
+	}
+
+	template <csd::IsComparable<T> V>
+	maybe<U> pop(const V& key)
+	{
+		maybe<U> value = get(key);
+		remove(key);
+		return value;
 	}
 
 	str to_str() const
@@ -109,9 +186,9 @@ public:
 			return "{}";
 
 		for (size_t i = 0; i < m_len; i++) {
-			ret.append(m_keys[i]);
+			ret.append(m_pairs[i].key);
 			ret.append(": ");
-			ret.append(m_values[i]);
+			ret.append(m_pairs[i].value);
 
 			if (i + 1 != m_len)
 				ret.append(", ");
@@ -122,77 +199,65 @@ public:
 		return ret;
 	}
 
-	void append(T key, U value)
+	iterator begin()
 	{
-		m_keys.append(key);
-		m_values.append(value);
-		m_len++;
+		return m_pairs.begin();
 	}
 
-	void append(map<T, U> other)
+	iterator end()
 	{
-		for (int i = 0; i < other.len(); i++) {
-			append(other.keys()[i], other.values()[i]);
-		}
+		return m_pairs.end();
 	}
 
-	void remove(int index)
+	const_iterator begin() const
 	{
-		if (index >= len())
-			throw csd::index_exception(index, 0, len() - 1);
-
-		m_keys.remove(index);
-		m_values.remove(index);
-		m_len--;
+		return m_pairs.begin();
 	}
 
-	template <csd::IsComparable<T> V>
-	void remove(const V& key)
+	const_iterator end() const
 	{
-		for (int i = 0; i < m_len; i++) {
-			if (m_keys[i] == key) {
-				remove(i);
-				return;
-			}
-		}
+		return m_pairs.end();
 	}
 
-	template <csd::IsComparable<T> V>
-	U get(const V& key)
+	map& operator=(const map<T, U>& other)
 	{
-		for (int i = 0; i < m_len; i++)
-			if (m_keys[i] == key)
-				return m_values[i];
-
-		return 0;
+		return this(other);
 	}
 
 	U& operator[](int index)
 	{
-		return m_values[index];
+		return m_pairs.at(index).value;
 	}
 
+	const U& operator[](size_t index) const
+	{
+		return m_pairs.at(index).value;
+	}
 
 	template <csd::IsComparable<T> V>
 	U& operator[](const V& key)
 	{
-		for (int i = 0; i < len(); i++)
-			if (m_keys[i] == key)
-				return m_values[i];
+		for (int i = 0; i < m_len; i++)
+			if (m_pairs[i].key == key)
+				return m_pairs[i].value;
+
+		append(key, static_cast<U>(0));
+		return m_pairs[m_len - 1].value;
 	}
 
-	void operator+=(map<T, U> other)
+	map& operator+=(map<T, U> other)
 	{
-		for (int i = 0; i < other.len(); i++) {
+		for (int i = 0; i < other.len(); i++)
 			append(other.keys()[i], other.values()[i]);
-		}
 
+		return *this;
 	}
 
-	void operator-=(map<T, U> other)
+	map& operator-=(map<T, U> other)
 	{
-		for (int i = 0; i < other.len(); i++) {
+		for (int i = 0; i < other.len(); i++)
 			remove(other.keys()[i]);
-		}
+
+		return *this;
 	}
 };
