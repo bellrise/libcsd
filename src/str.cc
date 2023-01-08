@@ -125,7 +125,7 @@ bool str::empty() const
 	return len() == 0;
 }
 
-size_t str::find(const str& substr)
+size_t str::find(const str& substr) const
 {
 	if (len() < substr.len())
 		return invalid_index;
@@ -138,7 +138,7 @@ size_t str::find(const str& substr)
 	return invalid_index;
 }
 
-str str::substr(size_t start_index, size_t length)
+str str::substr(size_t start_index, size_t length) const
 {
 	if (start_index >= len())
 		return str();
