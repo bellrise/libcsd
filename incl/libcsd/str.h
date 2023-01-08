@@ -73,7 +73,7 @@ struct str
 	 * Returns the index at which the found sub-string starts,
 	 * or str::invalid_index if no string is found.
 	 */
-	size_t find(const str& substr);
+	size_t find(const str& substr) const;
 
 	/**
 	 * @method substr
@@ -82,7 +82,7 @@ struct str
 	 * set of arguments will just return an empty string. The default `length`
 	 * will collect to the end of the string.
 	 */
-	str substr(size_t start_index, size_t length = -1);
+	str substr(size_t start_index, size_t length = -1) const;
 
 	/* Chain-modify methods */
 	str& replace(char from, char to);
