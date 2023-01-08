@@ -32,12 +32,14 @@ struct any_exception
  */
 struct index_exception : public any_exception
 {
+	index_exception(const str& str_index);
 	index_exception(int index);
 	index_exception(int index, int min, int max);
 	str message() const override;
 
 private:
 	bool m_has_bounds;
+	str m_str_index;
 	int m_index;
 	int m_min;
 	int m_max;
