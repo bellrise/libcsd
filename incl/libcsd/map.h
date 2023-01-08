@@ -260,4 +260,18 @@ public:
 
 		return *this;
 	}
+
+	bool operator==(map<T, U> other)
+	{
+		if (m_len != other.len())
+			return false;
+
+		for (int i = 0; i < m_len; i++) {
+			if (m_pairs[i].key != other.keys()[i]
+			 || m_pairs[i].value != other.values()[i])
+				return false;
+		}
+
+		return true;
+	}
 };
