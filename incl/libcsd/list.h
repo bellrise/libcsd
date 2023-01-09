@@ -64,7 +64,7 @@ struct list
 		clear();
 	}
 
-	inline size_t len() const
+	inline int len() const
 	{
 		return m_len;
 	}
@@ -74,6 +74,138 @@ struct list
 		resize(++m_len);
 		m_ptr[m_len - 1] = new T(copied_value);
 		return *this;
+	}
+
+	template <csd::IsMovable V>
+	list& append(V&& moved_value)
+	{
+		resize(++m_len);
+		m_ptr[m_len - 1] = new T(csd::move(moved_value));
+		return *this;
+	}
+
+	list& extend(const list& other_list)
+	{
+		for (const T& elem : other_list)
+			append(elem);
+	}
+
+	void remove(int index)
+	{
+		index = resolve_index(index);
+		delete m_ptr[index];
+
+		for (int i = index; i < len() - 1; i++) {
+			m_ptr[i] = m_ptr[i + 1];
+			m_ptr[i + 1] = nullptr;
+		}
+
+		resize(--m_len);
+	}
+
+	void remove_many(list<int> indices)
+	{
+		if (indices.len() == 1) {
+			remove(indices[0]);
+			return;
+		}
+
+		for (int index : indices) {
+			index = resolve_index(index);
+			delete m_ptr[index];
+			m_ptr[index] = nullptr;
+		}
+
+		for (int run = 0; run < len(); run++) {
+			for (int i = 0; i < len() - 1; i++) {
+				if (m_ptr[i] != nullptr)
+					continue;
+
+				/* If the slot is unused, shift over by 1. */
+				m_ptr[i] = m_ptr[i + 1];
+				m_ptr[i + 1] = nullptr;
+			}
+		}
+
+		m_len -= indices.len();
+		resize(m_len);
+	}
+
+	template <csd::IsComparable<T> V>
+	void remove(const V& item)
+	{
+		for (int i = 0; i < len(); i++) {
+			if (item == *m_ptr[i]) {
+				remove(i);
+				return;
+			}
+		}
+	}
+
+	void clear()
+	{
+		if (m_ptr) {
+			delete_range(m_ptr, 0, m_len);
+			delete [] m_ptr;
+		}
+
+		m_ptr = nullptr;
+		m_len = 0;
+		m_space = 0;
+	}
+
+	/**
+	 * @method filter
+	 * Filter the list, keeping only the elements that pass the check by
+	 * the consumer. This means that when passing the value to the consumer,
+	 * it should return a boolean value if the value should be kept.
+	 *
+	 *  list<int> numbers = { 1, 2, 3, 4, 5, 6 };
+	 *  numbers.filter([] (const int& number) {
+	 *      return number < 3;
+	 *  });
+	 *
+	 *  // `numbers` is now { 1, 2 }
+	 *
+	 * In the example above an array of numbers is created, and filter with
+	 * a lambda is called. All elements are passed by their `const T&` type.
+	 * The lambda in this case only returns true if the number is smaller
+	 * than 3, meaning only { 1, 2 } will be kept from the initial list.
+	 */
+	list<T>& filter(filter_consumer consumer)
+	{
+		list<int> to_remove;
+
+		for (int i = 0; i < len(); i++) {
+			if (!consumer(at(i)))
+				to_remove += i;
+		}
+
+		remove_many(to_remove);
+		return *this;
+	}
+
+	/**
+	 * @method apply
+	 * Apply a change to each element, using an apply_consumer. May be used
+	 * similarly to the filter consumer using a lambda, but the argument passed
+	 * is of type `T&`, which can be modified.
+	 */
+	list<T>& apply(apply_consumer consumer)
+	{
+		for (T& item : *this)
+			consumer(item);
+		return *this;
+	}
+
+	T& at(int index)
+	{
+		return *(m_ptr[resolve_index(index)]);
+	}
+
+	const T& at(int index) const
+	{
+		return *(m_ptr[resolve_index(index)]);
 	}
 
 	template <csd::IsMovable V>
@@ -256,7 +388,7 @@ struct list
 		if (len() != other.len())
 			return false;
 
-		for (size_t i = 0; i < len(); i++) {
+		for (int i = 0; i < len(); i++) {
 			if (*m_ptr[i] != other[i])
 				return false;
 		}
@@ -302,8 +434,18 @@ struct list
 	{ return const_iterator(&m_ptr[len()]); }
 
 private:
+
+	int resolve_index(int index) const
+	{
+		if (index < 0)
+			index = len() + index;
+		if (index < 0 || index >= len())
+			throw csd::index_exception(index, 0, len() - 1);
+		return index;
+	}
+
 	/* Allocate enough space for n elements. */
-	void resize(size_t n)
+	void resize(int n)
 	{
 		if (m_space >= n)
 			return;
@@ -311,9 +453,9 @@ private:
 		/* Allocate to the nearest power of 2, or 1024 elements if the total
 		   required size is over 1024. This will ensure a small memory footprint
 		   for tiny arrays, but an over-allocation strategy for large arrays. */
-		size_t new_size = 1024;
+		int new_size = 1024;
 		for (int i = 0; i < 10; i++) {
-			if ((size_t) (1 << i) < n)
+			if ((int) (1 << i) < n)
 				continue;
 			new_size = (1 << i);
 			break;
@@ -343,17 +485,17 @@ private:
 		m_space = new_size;
 	}
 
-	void copy_range(T **to_ptr, T **from_ptr, size_t n)
+	void copy_range(T **to_ptr, T **from_ptr, int n)
 	{
 		delete_range(to_ptr, 0, n);
-		for (size_t i = 0; i < n; i++) {
+		for (int i = 0; i < n; i++) {
 			to_ptr[i] = new T(*from_ptr[i]);
 		}
 	}
-
-	void delete_range(T **ptr, size_t from, size_t to)
+  
+	void delete_range(T **ptr, int from, int to)
 	{
-		for (size_t i = from; i < to; i++) {
+		for (int i = from; i < to; i++) {
 			if (ptr[i] == nullptr)
 				continue;
 			delete ptr[i];
@@ -361,9 +503,9 @@ private:
 		}
 	}
 
-	inline void zero_range(T **ptr, size_t from, size_t to)
+	inline void zero_range(T **ptr, int from, int to)
 	{
-		for (size_t i = from; i < to; i++)
+		for (int i = from; i < to; i++)
 			ptr[i] = nullptr;
 	}
 
@@ -381,7 +523,7 @@ private:
 		if (len() == 0)
 			return "[]";
 
-		for (size_t i = 0; i < len() - 1; i++)
+		for (int i = 0; i < len() - 1; i++)
 			builder += str(*m_ptr[i]) + ", ";
 
 		builder += str(*m_ptr[len() - 1]);
@@ -389,7 +531,7 @@ private:
 		return builder + ']';
 	}
 
-	size_t m_space;
-	size_t m_len;
+	int m_space;
+	int m_len;
 	T **m_ptr;
 };

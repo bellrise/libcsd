@@ -22,7 +22,7 @@ inline str format(const str& empty_fmt)
 template <csd::StringConvertible T, typename... VT>
 str format(const str& fmt, T first_arg, VT... args)
 {
-	size_t index;
+	int index;
 	str formatted;
 
 	if ((index = fmt.find("{}")) == str::invalid_index)
