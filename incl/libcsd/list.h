@@ -6,6 +6,7 @@
 #include <libcsd/iterator.h>
 #include <libcsd/routine.h>
 #include <libcsd/detail.h>
+#include <libcsd/error.h>
 #include <libcsd/str.h>
 #include <stddef.h>
 #include <string.h>
@@ -64,7 +65,7 @@ struct list
 		clear();
 	}
 
-	inline size_t len() const
+	inline int len() const
 	{
 		return m_len;
 	}
@@ -90,14 +91,12 @@ struct list
 			append(elem);
 	}
 
-	void remove(size_t index)
+	void remove(int index)
 	{
-		if (index >= len())
-			throw csd::index_exception(index, 0, len() - 1);
-
+		index = resolve_index(index);
 		delete m_ptr[index];
 
-		for (size_t i = index; i < len() - 1; i++) {
+		for (int i = index; i < len() - 1; i++) {
 			m_ptr[i] = m_ptr[i + 1];
 			m_ptr[i + 1] = nullptr;
 		}
@@ -105,23 +104,21 @@ struct list
 		resize(--m_len);
 	}
 
-	void remove_many(list<size_t> indices)
+	void remove_many(list<int> indices)
 	{
 		if (indices.len() == 1) {
 			remove(indices[0]);
 			return;
 		}
 
-		for (size_t i = 0; i < indices.len(); i++) {
-			if (indices[i] >= len())
-				throw csd::index_exception(i, 0, len() - 1);
-
-			delete m_ptr[indices[i]];
-			m_ptr[indices[i]] = nullptr;
+		for (int index : indices) {
+			index = resolve_index(index);
+			delete m_ptr[index];
+			m_ptr[index] = nullptr;
 		}
 
-		for (size_t run = 0; run < len(); run++) {
-			for (size_t i = 0; i < len() - 1; i++) {
+		for (int run = 0; run < len(); run++) {
+			for (int i = 0; i < len() - 1; i++) {
 				if (m_ptr[i] != nullptr)
 					continue;
 
@@ -138,7 +135,7 @@ struct list
 	template <csd::IsComparable<T> V>
 	void remove(const V& item)
 	{
-		for (size_t i = 0; i < len(); i++) {
+		for (int i = 0; i < len(); i++) {
 			if (item == *m_ptr[i]) {
 				remove(i);
 				return;
@@ -148,8 +145,10 @@ struct list
 
 	void clear()
 	{
-		delete_range(m_ptr, 0, m_len);
-		delete [] m_ptr;
+		if (m_ptr) {
+			delete_range(m_ptr, 0, m_len);
+			delete [] m_ptr;
+		}
 
 		m_ptr = nullptr;
 		m_len = 0;
@@ -176,9 +175,9 @@ struct list
 	 */
 	list<T>& filter(filter_consumer consumer)
 	{
-		list<size_t> to_remove;
+		list<int> to_remove;
 
-		for (size_t i = 0; i < len(); i++) {
+		for (int i = 0; i < len(); i++) {
 			if (!consumer(at(i)))
 				to_remove += i;
 		}
@@ -200,18 +199,14 @@ struct list
 		return *this;
 	}
 
-	T& at(size_t index)
+	T& at(int index)
 	{
-		if (index >= len())
-			throw csd::index_exception(index, 0, len() - 1);
-		return *(m_ptr[index]);
+		return *(m_ptr[resolve_index(index)]);
 	}
 
-	const T& at(size_t index) const
+	const T& at(int index) const
 	{
-		if (index >= len())
-			throw csd::index_exception(index, 0, len() - 1);
-		return *(m_ptr[index]);
+		return *(m_ptr[resolve_index(index)]);
 	}
 
 	str to_str() const
@@ -226,12 +221,12 @@ struct list
 		return this(other);
 	}
 
-	T& operator[](size_t index)
+	T& operator[](int index)
 	{
 		return at(index);
 	}
 
-	const T& operator[](size_t index) const
+	const T& operator[](int index) const
 	{
 		return at(index);
 	}
@@ -256,7 +251,7 @@ struct list
 		if (len() != other.len())
 			return false;
 
-		for (size_t i = 0; i < len(); i++) {
+		for (int i = 0; i < len(); i++) {
 			if (*m_ptr[i] != other[i])
 				return false;
 		}
@@ -302,8 +297,18 @@ struct list
 	{ return const_iterator(&m_ptr[len()]); }
 
 private:
+
+	int resolve_index(int index) const
+	{
+		if (index < 0)
+			index = len() + index;
+		if (index < 0 || index >= len())
+			throw csd::index_exception(index, 0, len() - 1);
+		return index;
+	}
+
 	/* Allocate enough space for n elements. */
-	void resize(size_t n)
+	void resize(int n)
 	{
 		if (m_space >= n)
 			return;
@@ -311,9 +316,9 @@ private:
 		/* Allocate to the nearest power of 2, or 1024 elements if the total
 		   required size is over 1024. This will ensure a small memory footprint
 		   for tiny arrays, but an over-allocation strategy for large arrays. */
-		size_t new_size = 1024;
+		int new_size = 1024;
 		for (int i = 0; i < 10; i++) {
-			if ((size_t) (1 << i) < n)
+			if ((int) (1 << i) < n)
 				continue;
 			new_size = (1 << i);
 			break;
@@ -343,17 +348,17 @@ private:
 		m_space = new_size;
 	}
 
-	void copy_range(T **to_ptr, T **from_ptr, size_t n)
+	void copy_range(T **to_ptr, T **from_ptr, int n)
 	{
 		delete_range(to_ptr, 0, n);
-		for (size_t i = 0; i < n; i++) {
+		for (int i = 0; i < n; i++) {
 			to_ptr[i] = new T(*from_ptr[i]);
 		}
 	}
 
-	void delete_range(T **ptr, size_t from, size_t to)
+	void delete_range(T **ptr, int from, int to)
 	{
-		for (size_t i = from; i < to; i++) {
+		for (int i = from; i < to; i++) {
 			if (ptr[i] == nullptr)
 				continue;
 			delete ptr[i];
@@ -361,9 +366,9 @@ private:
 		}
 	}
 
-	inline void zero_range(T **ptr, size_t from, size_t to)
+	inline void zero_range(T **ptr, int from, int to)
 	{
-		for (size_t i = from; i < to; i++)
+		for (int i = from; i < to; i++)
 			ptr[i] = nullptr;
 	}
 
@@ -381,7 +386,7 @@ private:
 		if (len() == 0)
 			return "[]";
 
-		for (size_t i = 0; i < len() - 1; i++)
+		for (int i = 0; i < len() - 1; i++)
 			builder += str(*m_ptr[i]) + ", ";
 
 		builder += str(*m_ptr[len() - 1]);
@@ -389,7 +394,7 @@ private:
 		return builder + ']';
 	}
 
-	size_t m_space;
-	size_t m_len;
+	int m_space;
+	int m_len;
 	T **m_ptr;
 };
