@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "libcsd/detail.h"
+#include "libcsd/error.h"
 #include <libcsd/format.h>
 #include <libcsd/maybe.h>
 #include <libcsd/list.h>
@@ -30,116 +32,108 @@ struct map
 
 	map() = default;
 
-	map(K key, V value)
-	{
-		append(key, value);
-	}
-
-	template<typename ...VK>
-	map(VK ...args)
+	template<typename... KV>
+	map(KV ...args)
 	{
 		append(args...);
 	}
 
-	list<K> keys()
+	map(const map& copied_map)
+	{
+		for (const pair& kv : copied_map)
+			m_pairs.append(kv);
+	}
+
+	map(map&& moved_map)
+		: m_pairs(csd::move(moved_map.m_pairs))
+	{ }
+
+	list<K> keys() const
 	{
 		list<K> keys;
 
-		for (pair p : m_pairs)
+		for (const pair& p : m_pairs)
 			keys.append(p.key);
 
 		return keys;
 	}
 
-	list<V> values()
+	list<V> values() const
 	{
 		list<V> values;
 
-		for (pair p : m_pairs)
+		for (const pair& p : m_pairs)
 			values.append(p.value);
 
 		return values;
 	}
 
-	list<pair> items()
+	list<pair> items() const
 	{
 		return m_pairs;
 	}
 
 	template <csd::IsComparable<K> T>
-	bool has_key(const T& key)
+	bool has_key(const T& key) const
 	{
-		for (int i = 0; i < this->len(); i++)
-			if (m_pairs[i].key == key)
+		for (const pair& kv : m_pairs) {
+			if (kv.key == key)
 				return true;
+		}
 
 		return false;
 	}
 
-	inline int len()
+	inline int len() const
 	{
-		return m_len;
+		return m_pairs.len();
 	}
 
 	void clear()
 	{
-		for (int i = 0; i < m_len - 1; i++) {
-			m_pairs.remove(i);
-		}
-
-		m_len = 0;
+		m_pairs.clear();
 	}
 
+	/**
+	 * @method update
+	 * Update a value at `key`. Throws if `key` is not found.
+	 */
 	template <csd::IsComparable<K> T>
-	void update(T key, V value)
+	map& update(const T& key, const V& value)
 	{
-		for (pair p : m_pairs)
-			if (p.key == key)
+		for (pair p : m_pairs) {
+			if (p.key == key) {
 				p.value = value;
-	}
-
-	void append(K key, V value)
-	{
-		if (has_key(key)) {
-			update(key, value);
-		} else {
-			m_pairs.append({ key, value });
-			m_len++;
+				return *this;
+			}
 		}
+
+		throw csd::index_exception(key);
 	}
 
-	template<typename... Rest>
-	void append(K key, V value, Rest... rest)
+	/**
+	 * @method append
+	 * Append a new key-value pair to the map. If such a key already exists,
+	 * it calls update() instead.
+	 */
+	map& append(const K& key, const V& value)
 	{
-		append(key, value);
+		if (has_key(key))
+			update(key, value);
+		else
+			m_pairs.append({ key, value });
 
-		if (sizeof...(rest) >= 2)
-			append(rest...);
-	}
-	void remove(int index)
-	{
-		if (index >= m_len)
-			throw csd::index_exception(index, 0, len() - 1);
-
-		m_pairs.remove(index);
-		m_len--;
+		return *this;
 	}
 
 	template <csd::IsComparable<K> T>
-	void remove(const T& key)
+	map& remove(const T& key)
 	{
-		for (int i = 0; i < m_len; i++)
-			if (m_pairs[i].key == key)
-				remove(i);
-	}
+		m_pairs.filter([&] (const pair& kv) {
+			return kv.key != key;
+		});
 
-	template<csd::IsComparable<K> T, typename... Rest>
-	void remove(const T& key, Rest... rest)
-	{
-		remove(key);
-
-		if (sizeof...(rest) >= 1)
-			remove(rest...);
+		return *this;
 	}
 
 	template <csd::IsComparable<K> T>
@@ -163,23 +157,21 @@ struct map
 
 	str to_str() const
 	{
-		str ret = "{ ";
+		str ret = '{';
 
-		if (m_len == 0)
+		if (!len())
 			return "{}";
 
-		for (int i = 0; i < m_len; i++) {
-			ret.append(m_pairs[i].key);
-			ret.append(": ");
-			ret.append(m_pairs[i].value);
+		for (int i = 0; i < len(); i++) {
+			ret.append(m_pairs[i].key)
+				.append(": ")
+				.append(m_pairs[i].value);
 
-			if (i + 1 != m_len)
+			if (i + 1 != len())
 				ret.append(", ");
 		}
 
-		ret.append(" }");
-
-		return ret;
+		return ret + '}';
 	}
 
 	iterator begin()
@@ -202,44 +194,51 @@ struct map
 		return m_pairs.end();
 	}
 
-	map& operator=(const map<K, V>& other)
+	map& operator=(const map& other)
 	{
 		return this(other);
 	}
 
-	V& operator[](int index)
+	/**
+	 * @method operator[]
+	 * Access the value at `key`. Throws if such a key does not exist.
+	 */
+	template <csd::IsComparable<K> T>
+	V& operator[](const T& map_key)
 	{
-		return m_pairs.at(index).value;
-	}
+		for (const auto& [key, value] : m_pairs) {
+			if (key == map_key)
+				return value;
+		}
 
-	const V& operator[](size_t index) const
-	{
-		return m_pairs.at(index).value;
+		throw csd::index_exception(map_key);
 	}
 
 	template <csd::IsComparable<K> T>
-	V& operator[](const T& key)
+	const V& operator[](const T& map_key) const
 	{
-		for (int i = 0; i < m_len; i++)
-			if (m_pairs[i].key == key)
-				return m_pairs[i].value;
+		for (const auto& [key, value] : m_pairs) {
+			if (key == map_key)
+				return value;
+		}
 
-		append(key, static_cast<V>(0));
-		return m_pairs[m_len - 1].value;
+		throw csd::index_exception(map_key);
 	}
 
-	map& operator+=(map<K, V> other)
+	map& operator+=(const map& other)
 	{
-		for (int i = 0; i < other.len(); i++)
-			append(other.keys()[i], other.values()[i]);
+		for (const auto& [key, value] : other)
+			append(key, value);
 
 		return *this;
 	}
 
-	map& operator-=(map<K, V> other)
+	map& operator-=(const map& other)
 	{
-		for (int i = 0; i < other.len(); i++)
-			remove(other.keys()[i]);
+		for (const auto& [key, _] : other) {
+			if (has_key(key))
+				remove(key);
+		}
 
 		return *this;
 	}
@@ -247,12 +246,12 @@ struct map
 	template <csd::IsComparable<K> Ko, csd::IsComparable<V> Vo>
 	bool operator==(map<Ko, Vo> other)
 	{
-		if (m_len != other.len())
+		if (len() != other.len())
 			return false;
 
-		for (int i = 0; i < m_len; i++) {
-			if (m_pairs[i].key != other.keys()[i]
-			 || m_pairs[i].value != other.values()[i])
+		for (int i = 0; i < len(); i++) {
+			if (m_pairs[i].key != other.m_pairs[i].key
+			 || m_pairs[i].value != other.m_pairs[i].value)
 				return false;
 		}
 
@@ -261,5 +260,17 @@ struct map
 
 private:
 	list<pair> m_pairs;
-	int m_len = 0;
+
+	/* This is private, because the user shouldn't append many items in the same
+	   call, but rather in a loop or with a .append() chain. */
+	template<typename... Rest>
+	map& append(const K& key, const V& value, Rest ...rest)
+	{
+		append(key, value);
+
+		if (sizeof...(rest) >= 2)
+			append(rest...);
+
+		return *this;
+	}
 };
