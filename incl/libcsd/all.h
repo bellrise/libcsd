@@ -8,6 +8,7 @@
 #include <libcsd/list.h>
 #include <libcsd/print.h>
 #include <libcsd/maybe.h>
-#include <libcsd/rc.h>
 #include <libcsd/str.h>
 #include <libcsd/format.h>
+#include <libcsd/map.h>
+#include <libcsd/routine.h>

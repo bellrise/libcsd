@@ -11,16 +11,8 @@
  * Dynamically resizable dictionary;
  */
 template <typename T, typename U>
-struct map {
-	struct pair;
-
-private:
-	list<pair> m_pairs;
-	size_t m_len = 0;
-	using iterator = typename list<pair>::iterator;
-	using const_iterator = typename list<pair>::const_iterator;
-
-public:
+struct map
+{
 	struct pair
 	{
 		T key;
@@ -40,10 +32,8 @@ public:
 		}
 	};
 
-	inline size_t len()
-	{
-		return m_len;
-	}
+	using iterator = typename list<pair>::iterator;
+	using const_iterator = typename list<pair>::const_iterator;
 
 	map() = default;
 
@@ -91,6 +81,11 @@ public:
 				return true;
 
 		return false;
+	}
+
+	inline int len()
+	{
+		return m_len;
 	}
 
 	void clear()
@@ -180,7 +175,7 @@ public:
 		if (m_len == 0)
 			return "{}";
 
-		for (size_t i = 0; i < m_len; i++) {
+		for (int i = 0; i < m_len; i++) {
 			ret.append(m_pairs[i].key);
 			ret.append(": ");
 			ret.append(m_pairs[i].value);
@@ -270,4 +265,8 @@ public:
 
 		return true;
 	}
+
+private:
+	list<pair> m_pairs;
+	int m_len = 0;
 };

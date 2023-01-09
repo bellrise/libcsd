@@ -8,9 +8,6 @@
 namespace csd
 {
 
-namespace csd
-{
-
 /**
  * @exception any_exception
  * The base class for all libcsd exceptions, which you can catch
