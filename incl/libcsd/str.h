@@ -40,13 +40,13 @@ concept StringConvertible = ImplementsToString<T> || requires (T t)
  */
 struct str
 {
-	static constexpr size_t invalid_index = -1;
+	static constexpr int invalid_index = -1;
 
 	str();
 	str(str&& moved);
 	str(const str& other);
 	str(const char *string);
-	str(const char *string, size_t maxlen);
+	str(const char *string, int maxlen);
 
 	/* Conversion constructors */
 	str(size_t number);
@@ -63,7 +63,7 @@ struct str
 	~str();
 
 	/* Stat methods */
-	size_t len() const;
+	int len() const;
 	str to_str() const;
 	void print() const;
 	bool empty() const;
@@ -73,7 +73,7 @@ struct str
 	 * Returns the index at which the found sub-string starts,
 	 * or str::invalid_index if no string is found.
 	 */
-	size_t find(const str& substr) const;
+	int find(const str& substr) const;
 
 	/**
 	 * @method substr
@@ -82,7 +82,7 @@ struct str
 	 * set of arguments will just return an empty string. The default `length`
 	 * will collect to the end of the string.
 	 */
-	str substr(size_t start_index, size_t length = -1) const;
+	str substr(int start_index, int length = -1) const;
 
 	/* Chain-modify methods */
 	str& replace(char from, char to);
@@ -103,20 +103,22 @@ struct str
 	 * Returns the character at the given index. May throw index_exception if
 	 * `index` is out of bounds.
 	 */
-	char& operator[](size_t index);
-	const char& operator[](size_t index) const;
+	char& operator[](int index);
+	const char& operator[](int index) const;
 
 protected:
 	char *m_ptr;
-	size_t m_space;
-	size_t m_len;
+	int m_space;
+	int m_len;
 
 	void copy_from(const str& other);
-	void copy_from_raw(const char *other, size_t other_len);
+	void copy_from_raw(const char *other, int other_len);
+
+	int resolve_index(int index) const;
 
 	/* Resize the buffer the string is stored in. This must return the number
 	   of available bytes to use, and not the resized space. This way any caller
 	   functions may check if the next operation will fit in the buffer. resize()
 	   may modify m_space. */
-	[[nodiscard]] size_t resize(size_t nbytes);
+	[[nodiscard]] int resize(int nbytes);
 };

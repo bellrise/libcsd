@@ -46,7 +46,7 @@ str::str(const char *string)
 	m_ptr[m_space-1] = 0;
 }
 
-str::str(const char *string, size_t maxlen)
+str::str(const char *string, int maxlen)
 	: m_ptr(nullptr)
 	, m_space(0)
 	, m_len(0)
@@ -103,7 +103,7 @@ str::~str()
 	delete [] m_ptr;
 }
 
-size_t str::len() const
+int str::len() const
 {
 	return m_len;
 }
@@ -125,12 +125,12 @@ bool str::empty() const
 	return len() == 0;
 }
 
-size_t str::find(const str& substr) const
+int str::find(const str& substr) const
 {
 	if (len() < substr.len())
 		return invalid_index;
 
-	for (size_t i = 0; i <= len() - substr.len(); i++) {
+	for (int i = 0; i <= len() - substr.len(); i++) {
 		if (!strncmp(m_ptr + i, substr.m_ptr, substr.len()))
 			return i;
 	}
@@ -138,7 +138,7 @@ size_t str::find(const str& substr) const
 	return invalid_index;
 }
 
-str str::substr(size_t start_index, size_t length) const
+str str::substr(int start_index, int length) const
 {
 	if (start_index >= len())
 		return str();
@@ -156,7 +156,7 @@ str str::substr(size_t start_index, size_t length) const
 
 str& str::replace(char from, char to)
 {
-	for (size_t i = 0; i < m_len; i++) {
+	for (int i = 0; i < m_len; i++) {
 		if (m_ptr[i] == from)
 			m_ptr[i] = to;
 	}
@@ -166,9 +166,9 @@ str& str::replace(char from, char to)
 
 str& str::append(const str& next)
 {
-	size_t old_len = len();
-	size_t bytes_to_copy = next.len();
-	size_t required_bytes = len() + next.len() + 1;
+	int old_len = len();
+	int bytes_to_copy = next.len();
+	int required_bytes = len() + next.len() + 1;
 
 	if (resize(required_bytes) < required_bytes) {
 		bytes_to_copy = next.len() - (m_space - len());
@@ -185,10 +185,10 @@ str& str::append(const str& next)
 
 str& str::append(const char *next)
 {
-	size_t old_len = len();
-	size_t next_len = strlen(next);
-	size_t bytes_to_copy = next_len;
-	size_t required_bytes = len() + next_len + 1;
+	int old_len = len();
+	int next_len = strlen(next);
+	int bytes_to_copy = next_len;
+	int required_bytes = len() + next_len + 1;
 
 	if (resize(required_bytes) < required_bytes) {
 		bytes_to_copy = next_len - (m_space - len());
@@ -205,7 +205,7 @@ str& str::append(const char *next)
 
 void str::copy_from(const str& other)
 {
-	size_t required_bytes = other.len() + 1;
+	int required_bytes = other.len() + 1;
 
 	if (resize(required_bytes) < required_bytes)
 		memmove(m_ptr, other.m_ptr, m_space - 1);
@@ -216,9 +216,9 @@ void str::copy_from(const str& other)
 	m_ptr[m_space-1] = 0;
 }
 
-void str::copy_from_raw(const char *other, size_t other_len)
+void str::copy_from_raw(const char *other, int other_len)
 {
-	size_t required_bytes = other_len + 1;
+	int required_bytes = other_len + 1;
 
 	if (resize(required_bytes) < required_bytes)
 		memmove(m_ptr, other, m_space - 1);
@@ -229,7 +229,16 @@ void str::copy_from_raw(const char *other, size_t other_len)
 	m_ptr[m_space-1] = 0;
 }
 
-size_t str::resize(size_t nbytes)
+int str::resolve_index(int index) const
+{
+	if (index < 0)
+		index = len() + index;
+	if (index < 0 || index >= len())
+		throw csd::index_exception(index, 0, len() - 1);
+	return index;
+}
+
+int str::resize(int nbytes)
 {
 	/* Our implementation of resize() only resizes up, without any downsizes.
 	   This means that if we request a small size of bytes, we keep the old
@@ -295,16 +304,12 @@ bool str::operator==(const str& other) const
 	return len() == other.len() && !strncmp(m_ptr, other.m_ptr, len());
 }
 
-char& str::operator[](size_t index)
+char& str::operator[](int index)
 {
-	if (index >= len())
-		throw csd::index_exception(index, 0, len() - 1);
-	return m_ptr[index];
+	return m_ptr[resolve_index(index)];
 }
 
-const char& str::operator[](size_t index) const
+const char& str::operator[](int index) const
 {
-	if (index >= len())
-		throw csd::index_exception(index, 0, len() - 1);
-	return m_ptr[index];
+	return m_ptr[resolve_index(index)];
 }
