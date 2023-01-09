@@ -1,34 +1,27 @@
-/* <libcsd/detail.h>
+/* <libcsd/map.h>
     Copyright (c) 2022-2023 bellrise */
 
 #pragma once
 
-#include <libcsd/list.h>
+#include <libcsd/format.h>
 #include <libcsd/maybe.h>
+#include <libcsd/list.h>
 
 /**
- * @class map<T, U>
- * Dynamically resizable dictionary;
+ * @class map<K, V>
+ * Stores an array of key-value pairs. Lookup of a pair happens using the key.
  */
-template <typename T, typename U>
+template <typename K, typename V>
 struct map
 {
 	struct pair
 	{
-		T key;
-		U value;
+		K key;
+		V value;
 
 		str to_str() const
 		{
-			str ret;
-
-			ret.append("{ ");
-			ret.append(key);
-			ret.append(": ");
-			ret.append(value);
-			ret.append(" }");
-
-			return ret;
+			return csd::format("{{}: {}}", key, value);
 		}
 	};
 
@@ -37,20 +30,20 @@ struct map
 
 	map() = default;
 
-	map(T key, U value)
+	map(K key, V value)
 	{
 		append(key, value);
 	}
 
-	template<typename ...VT>
-	map(VT ...args)
+	template<typename ...VK>
+	map(VK ...args)
 	{
 		append(args...);
 	}
 
-	list<T> keys()
+	list<K> keys()
 	{
-		list<T> keys;
+		list<K> keys;
 
 		for (pair p : m_pairs)
 			keys.append(p.key);
@@ -58,9 +51,9 @@ struct map
 		return keys;
 	}
 
-	list<U> values()
+	list<V> values()
 	{
-		list<U> values;
+		list<V> values;
 
 		for (pair p : m_pairs)
 			values.append(p.value);
@@ -73,8 +66,8 @@ struct map
 		return m_pairs;
 	}
 
-	template <csd::IsComparable<T> V>
-	bool has_key(const V& key)
+	template <csd::IsComparable<K> T>
+	bool has_key(const T& key)
 	{
 		for (int i = 0; i < this->len(); i++)
 			if (m_pairs[i].key == key)
@@ -97,15 +90,15 @@ struct map
 		m_len = 0;
 	}
 
-	template <csd::IsComparable<T> V>
-	void update(V key, U value)
+	template <csd::IsComparable<K> T>
+	void update(T key, V value)
 	{
 		for (pair p : m_pairs)
 			if (p.key == key)
 				p.value = value;
 	}
 
-	void append(T key, U value)
+	void append(K key, V value)
 	{
 		if (has_key(key)) {
 			update(key, value);
@@ -116,7 +109,7 @@ struct map
 	}
 
 	template<typename... Rest>
-	void append(T key, U value, Rest... rest)
+	void append(K key, V value, Rest... rest)
 	{
 		append(key, value);
 
@@ -132,16 +125,16 @@ struct map
 		m_len--;
 	}
 
-	template <csd::IsComparable<T> V>
-	void remove(const V& key)
+	template <csd::IsComparable<K> T>
+	void remove(const T& key)
 	{
 		for (int i = 0; i < m_len; i++)
 			if (m_pairs[i].key == key)
 				remove(i);
 	}
 
-	template<csd::IsComparable<T> V, typename... Rest>
-	void remove(const V& key, Rest... rest)
+	template<csd::IsComparable<K> T, typename... Rest>
+	void remove(const T& key, Rest... rest)
 	{
 		remove(key);
 
@@ -149,21 +142,21 @@ struct map
 			remove(rest...);
 	}
 
-	template <csd::IsComparable<T> V>
-	maybe<U> get(const V& key)
+	template <csd::IsComparable<K> T>
+	maybe<V> get(const T& key)
 	{
-		for (pair p : m_pairs)
+		for (pair p : m_pairs) {
 			if (p.key == key)
 				return p.value;
-
+		}
 
 		return {};
 	}
 
-	template <csd::IsComparable<T> V>
-	maybe<U> pop(const V& key)
+	template <csd::IsComparable<K> T>
+	maybe<V> pop(const T& key)
 	{
-		maybe<U> value = get(key);
+		maybe<V> value = get(key);
 		remove(key);
 		return value;
 	}
@@ -209,33 +202,33 @@ struct map
 		return m_pairs.end();
 	}
 
-	map& operator=(const map<T, U>& other)
+	map& operator=(const map<K, V>& other)
 	{
 		return this(other);
 	}
 
-	U& operator[](int index)
+	V& operator[](int index)
 	{
 		return m_pairs.at(index).value;
 	}
 
-	const U& operator[](size_t index) const
+	const V& operator[](size_t index) const
 	{
 		return m_pairs.at(index).value;
 	}
 
-	template <csd::IsComparable<T> V>
-	U& operator[](const V& key)
+	template <csd::IsComparable<K> T>
+	V& operator[](const T& key)
 	{
 		for (int i = 0; i < m_len; i++)
 			if (m_pairs[i].key == key)
 				return m_pairs[i].value;
 
-		append(key, static_cast<U>(0));
+		append(key, static_cast<V>(0));
 		return m_pairs[m_len - 1].value;
 	}
 
-	map& operator+=(map<T, U> other)
+	map& operator+=(map<K, V> other)
 	{
 		for (int i = 0; i < other.len(); i++)
 			append(other.keys()[i], other.values()[i]);
@@ -243,7 +236,7 @@ struct map
 		return *this;
 	}
 
-	map& operator-=(map<T, U> other)
+	map& operator-=(map<K, V> other)
 	{
 		for (int i = 0; i < other.len(); i++)
 			remove(other.keys()[i]);
@@ -251,8 +244,8 @@ struct map
 		return *this;
 	}
 
-	template <csd::IsComparable<T> K, csd::IsComparable<U> V>
-	bool operator==(map<K, V> other)
+	template <csd::IsComparable<K> Ko, csd::IsComparable<V> Vo>
+	bool operator==(map<Ko, Vo> other)
 	{
 		if (m_len != other.len())
 			return false;
