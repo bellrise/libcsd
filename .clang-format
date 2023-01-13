@@ -1,0 +1,28 @@
+---
+Language: Cpp
+IncludeBlocks: Regroup
+UseTab: ForContinuationAndIndentation
+AllowShortIfStatementsOnASingleLine: false
+IndentWidth: 8
+TabWidth: 8
+IndentCaseLabels: false
+AccessModifierOffset: -4
+IndentAccessModifiers: false
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortLambdasOnASingleLine: Inline
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterEnum: true
+  AfterStruct: true
+  AfterFunction: true
+  AfterClass: true
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+AlwaysBreakTemplateDeclarations: Yes
+BreakBeforeConceptDeclarations: true
+BreakConstructorInitializers: BeforeComma
+SpaceAfterTemplateKeyword: true
+PointerAlignment: Right
+ReferenceAlignment: Left
+PPIndentWidth: 1
+...
