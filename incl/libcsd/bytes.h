@@ -40,6 +40,8 @@ struct bytes
 		copy_from((const byte *) any_ptr, nbytes);
 	}
 
+	bytes& operator=(const bytes& other);
+
     private:
 	byte *m_ptr;
 	int m_size;

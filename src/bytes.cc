@@ -41,30 +41,38 @@ str bytes::to_str() const
 
 void bytes::alloc(int nbytes)
 {
-	if (!m_user_provided) {
-		if (nbytes == m_size)
-			return;
-
-		byte *old_ptr = m_ptr;
-		int to_copy = m_size;
-
-		m_ptr = new byte[nbytes];
-
-		if (nbytes < m_size)
-			to_copy = nbytes;
-
-		memmove(m_ptr, old_ptr, to_copy);
-		delete[] old_ptr;
-		m_size = nbytes;
-
-		return;
-	} else {
+	if (m_user_provided) {
 		if (nbytes > m_size) {
 			throw csd::memory_exception(
 			    "bytes: cannot alloc() more space in a "
 			    "user-provided memory area");
 		}
+
+		return;
 	}
+
+	if (nbytes == m_size)
+		return;
+
+	if (m_ptr == nullptr) {
+		m_ptr = new byte[nbytes];
+		m_size = nbytes;
+		m_user_provided = false;
+		return;
+	}
+
+	byte *old_ptr = m_ptr;
+	int to_copy = m_size;
+
+	m_ptr = new byte[nbytes];
+
+	if (nbytes < m_size)
+		to_copy = nbytes;
+
+	memmove(m_ptr, old_ptr, to_copy);
+	delete[] old_ptr;
+	m_size = nbytes;
+	m_user_provided = false;
 }
 
 void bytes::use_static_buffer(byte *raw_ptr, int nbytes)
@@ -111,4 +119,19 @@ void bytes::copy_to(byte *raw_ptr, int nbytes) const
 bytes::byte *bytes::raw_ptr() const
 {
 	return m_ptr;
+}
+
+bytes& bytes::operator=(const bytes& other)
+{
+	if (!m_user_provided && m_ptr)
+		delete[] m_ptr;
+
+	/* release the old pointer */
+	m_user_provided = false;
+	m_ptr = nullptr;
+
+	alloc(other.m_size);
+	copy_from(other.m_ptr, other.m_size);
+
+	return *this;
 }

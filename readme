@@ -58,6 +58,7 @@ Global symbols exposed by the library:
 	maybe<T>                possibly a value, used as a return type
 	routine<R, ...P>        thin wrapper around a function pointer
 	str                     basic string
+	bytes                   contiguous array of raw bytes
 	print()                 print n things
 	println()               print n things, followed by a newline
 
