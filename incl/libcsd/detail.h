@@ -120,4 +120,30 @@ constexpr inline base_type<T>&& move(T&& thing)
 	return static_cast<base_type<T>&&>(thing);
 }
 
+struct mem_type
+{
+	enum flags
+	{
+		/* memory location */
+		UNDEFINED = 0x00,
+		STATIC = 0x01,
+		HEAP = 0x02,
+		STACK = 0x03,
+		/* permissions */
+		READ = 0x10,
+		WRITE = 0x20,
+		RW = 0x30,
+	};
+
+	mem_type(int flags);
+
+	bool is_static();
+	bool is_heap();
+	bool is_stack();
+	bool is_readable();
+	bool is_writable();
+
+	int type;
+};
+
 } // namespace csd

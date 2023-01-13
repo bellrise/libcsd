@@ -61,4 +61,13 @@ str nullptr_exception::message() const
 	return m_message;
 }
 
+memory_exception::memory_exception(const str& message)
+    : m_message(message)
+{}
+
+str memory_exception::message() const
+{
+	return str("memory_exception: ") + m_message;
+}
+
 } // namespace csd

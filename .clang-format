@@ -11,6 +11,7 @@ IndentAccessModifiers: false
 AllowShortFunctionsOnASingleLine: Empty
 AllowShortLambdasOnASingleLine: Inline
 BreakBeforeBraces: Custom
+BreakBeforeBinaryOperators: NonAssignment
 BraceWrapping:
   AfterEnum: true
   AfterStruct: true
@@ -18,6 +19,10 @@ BraceWrapping:
   AfterClass: true
   SplitEmptyFunction: false
   SplitEmptyRecord: false
+  BeforeCatch: false
+  BeforeElse: false
+  BeforeLambdaBody: false
+  BeforeWhile: false
 AlwaysBreakTemplateDeclarations: Yes
 BreakBeforeConceptDeclarations: true
 BreakConstructorInitializers: BeforeComma
@@ -25,4 +30,6 @@ SpaceAfterTemplateKeyword: true
 PointerAlignment: Right
 ReferenceAlignment: Left
 PPIndentWidth: 1
+AlignOperands: AlignAfterOperator
+ColumnLimit: 80
 ...

@@ -68,4 +68,18 @@ struct nullptr_exception : public any_exception
 	str m_message;
 };
 
+/**
+ * @exception memory_exception
+ * No more space can be made or allocation failed.
+ */
+struct memory_exception : public any_exception
+{
+	memory_exception(const str& message);
+
+	str message() const override;
+
+    private:
+	str m_message;
+};
+
 } // namespace csd
