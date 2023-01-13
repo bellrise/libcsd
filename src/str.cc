@@ -53,6 +53,18 @@ str::str(const char *string, int maxlen)
 	copy_from_raw(string, maxlen);
 }
 
+str::str(void *pointer)
+    : m_ptr(nullptr)
+    , m_space(0)
+    , m_len(0)
+{
+	char buf[16];
+	memset(buf, 0, 16);
+
+	snprintf(buf, 16, "%p", pointer);
+	copy_from_raw(buf, strlen(buf));
+}
+
 str::str(size_t number)
     : m_ptr(nullptr)
     , m_space(0)
@@ -116,7 +128,7 @@ void str::print() const
 {
 	if (len() == 0)
 		return;
-	printf("%.*s", (int)len(), m_ptr);
+	printf("%.*s", (int) len(), m_ptr);
 }
 
 bool str::empty() const

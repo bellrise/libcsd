@@ -48,6 +48,7 @@ struct str
 	str(const char *string, int maxlen);
 
 	/* Conversion constructors */
+	str(void *pointer);
 	str(size_t number);
 	str(float number);
 	str(int number);

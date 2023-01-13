@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <libcsd/detail.h>
+#include <libcsd/str.h>
 
 /**
  * @class bytes
@@ -23,20 +23,14 @@ struct bytes
 	bytes(const bytes& copied_bytes) = delete;
 
 	int size() const;
+	str to_str() const;
+	bytes copy() const;
 
 	void alloc(int nbytes);
 	void use_static_buffer(byte *raw_ptr, int nbytes);
-
-	void zero();
-
-	/**
-	 * @method copy
-	 * Copies the buffer into a new allocated space.
-	 */
-	bytes copy() const;
-
 	void copy_from(const byte *raw_ptr, int nbytes);
 	void copy_to(byte *raw_ptr, int nbytes) const;
+	void zero();
 
 	byte *unsafe_ptr();
 

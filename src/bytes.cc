@@ -4,6 +4,7 @@
 #include <libcsd/bytes.h>
 #include <libcsd/detail.h>
 #include <libcsd/error.h>
+#include <libcsd/format.h>
 #include <string.h>
 
 bytes::bytes()
@@ -31,6 +32,11 @@ bytes::~bytes()
 int bytes::size() const
 {
 	return m_size;
+}
+
+str bytes::to_str() const
+{
+	return csd::format("<bytes {} size={}>", (void *) m_ptr, m_size);
 }
 
 void bytes::alloc(int nbytes)
@@ -65,6 +71,7 @@ void bytes::use_static_buffer(byte *raw_ptr, int nbytes)
 {
 	m_ptr = raw_ptr;
 	m_size = nbytes;
+	m_user_provided = true;
 }
 
 void bytes::zero()
