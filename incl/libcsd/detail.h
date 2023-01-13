@@ -6,30 +6,44 @@
 namespace csd {
 
 struct true_result
-{ static constexpr bool result = true; };
+{
+	static constexpr bool result = true;
+};
 
 struct false_result
-{ static constexpr bool result = false; };
+{
+	static constexpr bool result = false;
+};
 
 template <typename T>
 struct base_type_s
-{ using type = T; };
+{
+	using type = T;
+};
 
 template <typename T>
 struct base_type_s<T&>
-{ using type = T; };
+{
+	using type = T;
+};
 
 template <typename T>
 struct base_type_s<T&&>
-{ using type = T; };
+{
+	using type = T;
+};
 
 template <typename T>
-struct base_type_s<T*>
-{ using type = T; };
+struct base_type_s<T *>
+{
+	using type = T;
+};
 
 template <typename T>
-struct base_type_s<T**>
-{ using type = T; };
+struct base_type_s<T **>
+{
+	using type = T;
+};
 
 /**
  * @type base_type<T>
@@ -41,11 +55,15 @@ using base_type = typename base_type_s<T>::type;
 
 template <typename T>
 struct remove_const_s
-{ using type = T; };
+{
+	using type = T;
+};
 
 template <typename T>
 struct remove_const_s<const T>
-{ using type = T; };
+{
+	using type = T;
+};
 
 /**
  * @type base_type<T>
@@ -56,10 +74,12 @@ template <typename T>
 using remove_const = typename remove_const_s<T>::type;
 
 template <typename T, typename U>
-struct same_type_s : false_result { };
+struct same_type_s : false_result
+{};
 
 template <typename T>
-struct same_type_s<T, T> : true_result { };
+struct same_type_s<T, T> : true_result
+{};
 
 /**
  * @var same_type<T, U>
@@ -75,7 +95,7 @@ constexpr static bool same_type = same_type_s<T, U>::result;
  * Any type that can be moved.
  */
 template <typename T>
-concept IsMovable = requires (base_type<T> a, base_type<T> v)
+concept IsMovable = requires(base_type<T> a, base_type<T> v)
 {
 	a = static_cast<base_type<T>&&>(v);
 };
@@ -86,7 +106,7 @@ concept IsMovable = requires (base_type<T> a, base_type<T> v)
  * equality operator (==).
  */
 template <typename T, typename U>
-concept IsComparable = requires (base_type<T> a, base_type<U> b)
+concept IsComparable = requires(base_type<T> a, base_type<U> b)
 {
 	a == b;
 	b == a;
@@ -100,4 +120,4 @@ constexpr inline base_type<T>&& move(T&& thing)
 	return static_cast<base_type<T>&&>(thing);
 }
 
-}
+} // namespace csd

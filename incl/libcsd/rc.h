@@ -12,9 +12,9 @@ namespace csd {
    maps to <atomic> anyway. */
 
 #if defined __GNUC__
-# define __csd_force_inline    inline __attribute__((always_inline))
+#define __csd_force_inline inline __attribute__((always_inline))
 #else
-# error "the reference counter implementation will not work"
+#error "the reference counter implementation will not work"
 #endif
 
 using __arc_t = long;
@@ -42,4 +42,4 @@ __arc_t __csd_force_inline __arc_load(__arc& arc)
 	return arc.load();
 }
 
-}
+} // namespace csd

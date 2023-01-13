@@ -5,8 +5,7 @@
 
 #include <libcsd/str.h>
 
-namespace csd
-{
+namespace csd {
 
 /**
  * @exception any_exception
@@ -23,7 +22,7 @@ namespace csd
 struct any_exception
 {
 	virtual str message() const = 0;
-	virtual ~any_exception() { };
+	virtual ~any_exception(){};
 };
 
 /**
@@ -37,7 +36,7 @@ struct index_exception : public any_exception
 	index_exception(int index, int min, int max);
 	str message() const override;
 
-private:
+    private:
 	bool m_has_bounds;
 	str m_str_index;
 	int m_index;
@@ -65,8 +64,8 @@ struct nullptr_exception : public any_exception
 
 	str message() const override;
 
-private:
+    private:
 	str m_message;
 };
 
-}
+} // namespace csd

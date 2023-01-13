@@ -7,19 +7,17 @@
 
 namespace csd {
 
-template <
-	typename T,
-	typename Pointer = T*,
-	typename Reference = T&>
+template <typename T, typename Pointer = T *, typename Reference = T&>
 struct iterator
 {
 	/* T, Pointer & Reference should be based on the same type T. */
 	static_assert(same_type<base_type<T>, base_type<Pointer>>);
-	static_assert(same_type<base_type<T>, remove_const<base_type<Reference>>>);
+	static_assert(
+	    same_type<base_type<T>, remove_const<base_type<Reference>>>);
 
 	iterator(Pointer ptr)
-		: m_ptr(ptr)
-	{ }
+	    : m_ptr(ptr)
+	{}
 
 	/**
 	 * @method operator*
@@ -28,9 +26,10 @@ struct iterator
 	 */
 	Reference operator*() const
 	{
-		if constexpr (same_type<T***, Pointer>) {
+		if constexpr (same_type<T ***, Pointer>) {
 			return ***m_ptr;
-		} if constexpr (same_type<T**, Pointer>) {
+		}
+		if constexpr (same_type<T **, Pointer>) {
 			return **m_ptr;
 		} else {
 			return *m_ptr;
@@ -38,13 +37,20 @@ struct iterator
 	}
 
 	Pointer operator->()
-	{ return m_ptr; }
+	{
+		return m_ptr;
+	}
 
 	iterator& operator++()
-	{ m_ptr++; return *this; }
+	{
+		m_ptr++;
+		return *this;
+	}
 
 	iterator& operator++(int)
-	{ return (*this)->operator++(); }
+	{
+		return (*this)->operator++();
+	}
 
 	friend bool operator==(const iterator& a, const iterator& b)
 	{
@@ -56,8 +62,8 @@ struct iterator
 		return a.m_ptr != b.m_ptr;
 	}
 
-protected:
+    protected:
 	Pointer m_ptr;
 };
 
-}
+} // namespace csd

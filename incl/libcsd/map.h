@@ -3,11 +3,11 @@
 
 #pragma once
 
-#include "libcsd/detail.h"
-#include "libcsd/error.h"
+#include <libcsd/detail.h>
+#include <libcsd/error.h>
 #include <libcsd/format.h>
-#include <libcsd/maybe.h>
 #include <libcsd/list.h>
+#include <libcsd/maybe.h>
 
 /**
  * @class map<K, V>
@@ -32,8 +32,8 @@ struct map
 
 	map() = default;
 
-	template<typename... KV>
-	map(KV ...args)
+	template <typename... KV>
+	map(KV... args)
 	{
 		append(args...);
 	}
@@ -45,8 +45,8 @@ struct map
 	}
 
 	map(map&& moved_map)
-		: m_pairs(csd::move(moved_map.m_pairs))
-	{ }
+	    : m_pairs(csd::move(moved_map.m_pairs))
+	{}
 
 	list<K> keys() const
 	{
@@ -121,7 +121,7 @@ struct map
 		if (has_key(key))
 			update(key, value);
 		else
-			m_pairs.append({ key, value });
+			m_pairs.append({key, value});
 
 		return *this;
 	}
@@ -129,9 +129,7 @@ struct map
 	template <csd::IsComparable<K> T>
 	map& remove(const T& key)
 	{
-		m_pairs.filter([&] (const pair& kv) {
-			return kv.key != key;
-		});
+		m_pairs.filter([&](const pair& kv) { return kv.key != key; });
 
 		return *this;
 	}
@@ -164,8 +162,8 @@ struct map
 
 		for (int i = 0; i < len(); i++) {
 			ret.append(m_pairs[i].key)
-				.append(": ")
-				.append(m_pairs[i].value);
+			    .append(": ")
+			    .append(m_pairs[i].value);
 
 			if (i + 1 != len())
 				ret.append(", ");
@@ -250,21 +248,21 @@ struct map
 			return false;
 
 		for (int i = 0; i < len(); i++) {
-			if (m_pairs[i].key != other.m_pairs[i].key
-			 || m_pairs[i].value != other.m_pairs[i].value)
+			if (m_pairs[i].key != other.m_pairs[i].key ||
+			    m_pairs[i].value != other.m_pairs[i].value)
 				return false;
 		}
 
 		return true;
 	}
 
-private:
+    private:
 	list<pair> m_pairs;
 
-	/* This is private, because the user shouldn't append many items in the same
-	   call, but rather in a loop or with a .append() chain. */
-	template<typename... Rest>
-	map& append(const K& key, const V& value, Rest ...rest)
+	/* This is private, because the user shouldn't append many items in the
+	   same call, but rather in a loop or with a .append() chain. */
+	template <typename... Rest>
+	map& append(const K& key, const V& value, Rest... rest)
 	{
 		append(key, value);
 

@@ -76,4 +76,4 @@ void print_single(const bool val)
 	fputs(val ? "true" : "false", stdout);
 }
 
-}
+} // namespace csd

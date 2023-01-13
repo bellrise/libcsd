@@ -2,14 +2,14 @@ project('csd', 'cpp', version: '0.1', default_options: ['cpp_std=c++2a'])
 fs = import('fs')
 
 sources = [
-  'src/str.cc',
+  'src/error.cc',
   'src/print.cc',
-  'src/error.cc'
+  'src/str.cc',
 ]
 
 includes = include_directories('../incl')
 lib = static_library('csd', sources, include_directories: includes,
-  cpp_args: ['-O3', '-Wall', '-Wextra'], prelink: false, install: true)
+  cpp_args: ['-O3', '-Wall', '-Wextra'], prelink: true, install: true)
 
 # For testing
 if fs.is_file('main.cc')

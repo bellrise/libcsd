@@ -34,4 +34,5 @@ str format(const str& fmt, T first_arg, VT... args)
 
 	return formatted;
 }
-}
+
+} // namespace csd

@@ -6,8 +6,7 @@
 
 /* Print functions. */
 
-namespace csd
-{
+namespace csd {
 
 void print_single(const void *val);
 void print_single(const char *val);
@@ -24,10 +23,10 @@ void print_single(const float val);
 void print_single(const double val);
 void print_single(const bool val);
 
-}
+} // namespace csd
 
 template <typename T>
-void print(const T* value)
+void print(const T *value)
 {
 	csd::print_single(value);
 }
@@ -41,7 +40,7 @@ void print(const T& value)
 /* Multiple-argument print() functions. */
 
 template <typename T, typename... VT>
-void print(const T& value, const VT&... values)
+void print(const T& value, const VT&...values)
 {
 	csd::print_single(value);
 
@@ -52,7 +51,7 @@ void print(const T& value, const VT&... values)
 }
 
 template <typename T, typename... VT>
-void println(const T& value, const VT&... values)
+void println(const T& value, const VT&...values)
 {
 	csd::print_single(value);
 

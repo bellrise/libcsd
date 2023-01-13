@@ -43,18 +43,18 @@ template <typename T>
 struct maybe
 {
 	maybe()
-		: m_ok(false)
-	{ }
+	    : m_ok(false)
+	{}
 
 	maybe(const T& copied_value)
-		: m_value(new T(copied_value))
-		, m_ok(true)
-	{ }
+	    : m_value(new T(copied_value))
+	    , m_ok(true)
+	{}
 
 	maybe(T&& moved_value)
-		: m_value(new T(moved_value))
-		, m_ok(true)
-	{ }
+	    : m_value(new T(moved_value))
+	    , m_ok(true)
+	{}
 
 	~maybe()
 	{
@@ -73,9 +73,9 @@ struct maybe
 		return csd::move(*m_value);
 	}
 
-	void operator=(maybe&) =delete;
+	void operator=(maybe&) = delete;
 
-private:
+    private:
 	T *m_value;
 	bool m_ok;
 };

@@ -2,29 +2,28 @@
    Copyright (c) 2022-2023 bellrise */
 
 #include <libcsd/error.h>
-#include <string.h>
-#include <stdio.h>
 #include <new>
+#include <stdio.h>
+#include <string.h>
 
 str::str()
-	: m_ptr(nullptr)
-	, m_space(0)
-	, m_len(0)
-{
-}
+    : m_ptr(nullptr)
+    , m_space(0)
+    , m_len(0)
+{}
 
 str::str(const str& other)
-	: m_ptr(nullptr)
-	, m_space(0)
-	, m_len(0)
+    : m_ptr(nullptr)
+    , m_space(0)
+    , m_len(0)
 {
 	copy_from(other);
 }
 
 str::str(str&& moved)
-	: m_ptr(moved.m_ptr)
-	, m_space(moved.m_space)
-	, m_len(moved.m_len)
+    : m_ptr(moved.m_ptr)
+    , m_space(moved.m_space)
+    , m_len(moved.m_len)
 {
 	moved.m_ptr = nullptr;
 	moved.m_space = 0;
@@ -32,9 +31,9 @@ str::str(str&& moved)
 }
 
 str::str(const char *string)
-	: m_ptr(nullptr)
-	, m_space(0)
-	, m_len(0)
+    : m_ptr(nullptr)
+    , m_space(0)
+    , m_len(0)
 {
 	if (string == nullptr)
 		return;
@@ -43,21 +42,21 @@ str::str(const char *string)
 	m_space = m_len + 1;
 	m_ptr = new char[m_space];
 	memcpy(m_ptr, string, m_len);
-	m_ptr[m_space-1] = 0;
+	m_ptr[m_space - 1] = 0;
 }
 
 str::str(const char *string, int maxlen)
-	: m_ptr(nullptr)
-	, m_space(0)
-	, m_len(0)
+    : m_ptr(nullptr)
+    , m_space(0)
+    , m_len(0)
 {
 	copy_from_raw(string, maxlen);
 }
 
 str::str(size_t number)
-	: m_ptr(nullptr)
-	, m_space(0)
-	, m_len(0)
+    : m_ptr(nullptr)
+    , m_space(0)
+    , m_len(0)
 {
 	char buf[16];
 	memset(buf, 0, 16);
@@ -67,9 +66,9 @@ str::str(size_t number)
 }
 
 str::str(float number)
-	: m_ptr(nullptr)
-	, m_space(0)
-	, m_len(0)
+    : m_ptr(nullptr)
+    , m_space(0)
+    , m_len(0)
 {
 	char buf[16];
 	memset(buf, 0, 16);
@@ -79,9 +78,9 @@ str::str(float number)
 }
 
 str::str(int number)
-	: m_ptr(nullptr)
-	, m_space(0)
-	, m_len(0)
+    : m_ptr(nullptr)
+    , m_space(0)
+    , m_len(0)
 {
 	char buf[16];
 	memset(buf, 0, 16);
@@ -91,16 +90,16 @@ str::str(int number)
 }
 
 str::str(char c)
-	: m_ptr(nullptr)
-	, m_space(0)
-	, m_len(0)
+    : m_ptr(nullptr)
+    , m_space(0)
+    , m_len(0)
 {
 	copy_from_raw(&c, 1);
 }
 
 str::~str()
 {
-	delete [] m_ptr;
+	delete[] m_ptr;
 }
 
 int str::len() const
@@ -117,7 +116,7 @@ void str::print() const
 {
 	if (len() == 0)
 		return;
-	printf("%.*s", (int) len(), m_ptr);
+	printf("%.*s", (int)len(), m_ptr);
 }
 
 bool str::empty() const
@@ -178,7 +177,7 @@ str& str::append(const str& next)
 	}
 
 	memmove(&m_ptr[old_len], next.m_ptr, bytes_to_copy);
-	m_ptr[m_space-1] = 0;
+	m_ptr[m_space - 1] = 0;
 
 	return *this;
 }
@@ -198,7 +197,7 @@ str& str::append(const char *next)
 	}
 
 	memmove(&m_ptr[old_len], next, bytes_to_copy);
-	m_ptr[m_space-1] = 0;
+	m_ptr[m_space - 1] = 0;
 
 	return *this;
 }
@@ -213,7 +212,7 @@ void str::copy_from(const str& other)
 		memmove(m_ptr, other.m_ptr, other.len());
 
 	m_len = other.len();
-	m_ptr[m_space-1] = 0;
+	m_ptr[m_space - 1] = 0;
 }
 
 void str::copy_from_raw(const char *other, int other_len)
@@ -226,7 +225,7 @@ void str::copy_from_raw(const char *other, int other_len)
 		memmove(m_ptr, other, other_len);
 
 	m_len = other_len;
-	m_ptr[m_space-1] = 0;
+	m_ptr[m_space - 1] = 0;
 }
 
 int str::resolve_index(int index) const
@@ -240,9 +239,10 @@ int str::resolve_index(int index) const
 
 int str::resize(int nbytes)
 {
-	/* Our implementation of resize() only resizes up, without any downsizes.
-	   This means that if we request a small size of bytes, we keep the old
-	   buffer, and alloc a new one only if we don't have enough space. */
+	/* Our implementation of resize() only resizes up, without any
+	   downsizes. This means that if we request a small size of bytes, we
+	   keep the old buffer, and alloc a new one only if we don't have enough
+	   space. */
 
 	if (m_space >= nbytes)
 		return m_space;
@@ -250,7 +250,7 @@ int str::resize(int nbytes)
 	char *old_ptr = m_ptr;
 
 	try {
-		m_ptr = new char[nbytes+1];
+		m_ptr = new char[nbytes + 1];
 	} catch (std::bad_alloc& v) {
 		return m_space;
 	}
@@ -259,7 +259,7 @@ int str::resize(int nbytes)
 	memmove(m_ptr, old_ptr, m_space);
 	m_space = nbytes;
 
-	delete [] old_ptr;
+	delete[] old_ptr;
 	return m_space;
 }
 

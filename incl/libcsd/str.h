@@ -7,8 +7,7 @@
 
 struct str;
 
-namespace csd
-{
+namespace csd {
 
 /**
  * @concept ImplementsToString
@@ -16,7 +15,7 @@ namespace csd
  * any other str-constructible type.
  */
 template <typename T>
-concept ImplementsToString = requires (T t)
+concept ImplementsToString = requires(T t)
 {
 	static_cast<str>(t.to_str());
 };
@@ -27,12 +26,12 @@ concept ImplementsToString = requires (T t)
  * .to_str() method or can be passed into one of the str constructors.
  */
 template <typename T>
-concept StringConvertible = ImplementsToString<T> || requires (T t)
+concept StringConvertible = ImplementsToString<T> || requires(T t)
 {
 	static_cast<str>(t);
 };
 
-}
+} // namespace csd
 
 /**
  * @class str
@@ -57,8 +56,8 @@ struct str
 	/* Accept anything that can be converted into a string. */
 	template <csd::ImplementsToString T>
 	str(const T& object)
-		: str(object.to_str())
-	{ }
+	    : str(object.to_str())
+	{}
 
 	~str();
 
@@ -78,9 +77,9 @@ struct str
 	/**
 	 * @method substr
 	 * As in any popular language, substr() returns a slice of the string
-	 * starting at `start_index`, and continuing for `length` bytes. An invalid
-	 * set of arguments will just return an empty string. The default `length`
-	 * will collect to the end of the string.
+	 * starting at `start_index`, and continuing for `length` bytes. An
+	 * invalid set of arguments will just return an empty string. The
+	 * default `length` will collect to the end of the string.
 	 */
 	str substr(int start_index, int length = -1) const;
 
@@ -100,13 +99,13 @@ struct str
 
 	/**
 	 * @method []
-	 * Returns the character at the given index. May throw index_exception if
-	 * `index` is out of bounds.
+	 * Returns the character at the given index. May throw index_exception
+	 * if `index` is out of bounds.
 	 */
 	char& operator[](int index);
 	const char& operator[](int index) const;
 
-protected:
+    protected:
 	char *m_ptr;
 	int m_space;
 	int m_len;
@@ -116,9 +115,9 @@ protected:
 
 	int resolve_index(int index) const;
 
-	/* Resize the buffer the string is stored in. This must return the number
-	   of available bytes to use, and not the resized space. This way any caller
-	   functions may check if the next operation will fit in the buffer. resize()
-	   may modify m_space. */
+	/* Resize the buffer the string is stored in. This must return the
+	   number of available bytes to use, and not the resized space. This way
+	   any caller functions may check if the next operation will fit in the
+	   buffer. resize() may modify m_space. */
 	[[nodiscard]] int resize(int nbytes);
 };

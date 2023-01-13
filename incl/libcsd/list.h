@@ -3,13 +3,13 @@
 
 #pragma once
 
+#include <libcsd/detail.h>
 #include <libcsd/iterator.h>
 #include <libcsd/routine.h>
-#include <libcsd/detail.h>
 #include <libcsd/str.h>
 #include <stddef.h>
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
 
 /**
  * @class list<T>
@@ -20,39 +20,39 @@ struct list
 {
 	using filter_consumer = routine<bool, const T&>;
 	using apply_consumer = routine<void, T&>;
-	using iterator = csd::iterator<T, T**, T&>;
-	using const_iterator = csd::iterator<T, T**, const T&>;
+	using iterator = csd::iterator<T, T **, T&>;
+	using const_iterator = csd::iterator<T, T **, const T&>;
 
 	list()
-		: m_space(0)
-		, m_len(0)
-		, m_ptr(nullptr)
-	{ }
+	    : m_space(0)
+	    , m_len(0)
+	    , m_ptr(nullptr)
+	{}
 
-	template <typename ...Vt>
-	list(Vt ...values)
-		: m_space(0)
-		, m_len(0)
-		, m_ptr(nullptr)
+	template <typename... Vt>
+	list(Vt... values)
+	    : m_space(0)
+	    , m_len(0)
+	    , m_ptr(nullptr)
 	{
-		T value_array[] = { values... };
+		T value_array[] = {values...};
 		for (size_t i = 0; i < sizeof...(values); i++)
 			append(value_array[i]);
 	}
 
 	list(const list& copied_list)
-		: m_space(0)
-		, m_len(copied_list.len())
-		, m_ptr(nullptr)
+	    : m_space(0)
+	    , m_len(copied_list.len())
+	    , m_ptr(nullptr)
 	{
 		resize(m_len);
 		copy_range(m_ptr, copied_list.m_ptr, m_len);
 	}
 
 	list(list&& moved_list)
-		: m_space(moved_list.m_space)
-		, m_len(moved_list.m_len)
-		, m_ptr(moved_list.m_ptr)
+	    : m_space(moved_list.m_space)
+	    , m_len(moved_list.m_len)
+	    , m_ptr(moved_list.m_ptr)
 	{
 		moved_list.m_space = 0;
 		moved_list.m_len = 0;
@@ -146,7 +146,7 @@ struct list
 	{
 		if (m_ptr) {
 			delete_range(m_ptr, 0, m_len);
-			delete [] m_ptr;
+			delete[] m_ptr;
 		}
 
 		m_ptr = nullptr;
@@ -188,8 +188,8 @@ struct list
 	/**
 	 * @method apply
 	 * Apply a change to each element, using an apply_consumer. May be used
-	 * similarly to the filter consumer using a lambda, but the argument passed
-	 * is of type `T&`, which can be modified.
+	 * similarly to the filter consumer using a lambda, but the argument
+	 * passed is of type `T&`, which can be modified.
 	 */
 	list<T>& apply(apply_consumer consumer)
 	{
@@ -291,42 +291,61 @@ struct list
 	/* non-comparable T & V */
 	template <typename V>
 	bool operator==(const list<V>& other) const
-	{ return false; }
+	{
+		return false;
+	}
 
 	template <typename V>
 	bool operator<(const list<V>& other) const
-	{ return len() < other.len(); }
+	{
+		return len() < other.len();
+	}
 
 	template <typename V>
 	bool operator>(const list<V>& other) const
-	{ return len() > other.len(); }
+	{
+		return len() > other.len();
+	}
 
 	template <typename V>
 	bool operator<=(const list<V>& other) const
-	{ return len() <= other.len(); }
+	{
+		return len() <= other.len();
+	}
 
 	template <typename V>
 	bool operator>=(const list<V>& other) const
-	{ return len() >= other.len(); }
+	{
+		return len() >= other.len();
+	}
 
 	template <typename V>
 	bool operator!() const
-	{ return !len(); }
+	{
+		return !len();
+	}
 
 	iterator begin()
-	{ return iterator(&m_ptr[0]); }
+	{
+		return iterator(&m_ptr[0]);
+	}
 
 	iterator end()
-	{ return iterator(&m_ptr[len()]); }
+	{
+		return iterator(&m_ptr[len()]);
+	}
 
 	const_iterator begin() const
-	{ return const_iterator(&m_ptr[0]); }
+	{
+		return const_iterator(&m_ptr[0]);
+	}
 
 	const_iterator end() const
-	{ return const_iterator(&m_ptr[len()]); }
+	{
+		return const_iterator(&m_ptr[len()]);
+	}
 
-private:
-
+    private:
 	int resolve_index(int index) const
 	{
 		if (index < 0)
@@ -342,12 +361,13 @@ private:
 		if (m_space >= n)
 			return;
 
-		/* Allocate to the nearest power of 2, or 1024 elements if the total
-		   required size is over 1024. This will ensure a small memory footprint
-		   for tiny arrays, but an over-allocation strategy for large arrays. */
+		/* Allocate to the nearest power of 2, or 1024 elements if the
+		   total required size is over 1024. This will ensure a small
+		   memory footprint for tiny arrays, but an over-allocation
+		   strategy for large arrays. */
 		int new_size = 1024;
 		for (int i = 0; i < 10; i++) {
-			if ((int) (1 << i) < n)
+			if ((int)(1 << i) < n)
 				continue;
 			new_size = (1 << i);
 			break;
@@ -358,22 +378,22 @@ private:
 
 		/* Previously empty buffer. */
 		if (m_ptr == nullptr) {
-			m_ptr = new T*[new_size];
+			m_ptr = new T *[new_size];
 			zero_range(m_ptr, 0, new_size);
 			m_space = new_size;
 			return;
 		}
 
-		/* We already allocated something, so we need to create a new buffer
-		   and copy the old pointers to the new buffer. */
+		/* We already allocated something, so we need to create a new
+		   buffer and copy the old pointers to the new buffer. */
 		T **old_ptr = m_ptr;
 
-		m_ptr = new T*[new_size];
+		m_ptr = new T *[new_size];
 
 		zero_range(m_ptr, 0, new_size);
 		memmove(m_ptr, old_ptr, sizeof(*m_ptr) * m_space);
 
-		delete [] old_ptr;
+		delete[] old_ptr;
 		m_space = new_size;
 	}
 
