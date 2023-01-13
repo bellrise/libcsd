@@ -2,6 +2,7 @@ project('csd', 'cpp', version: '0.1', default_options: ['cpp_std=c++2a'])
 fs = import('fs')
 
 sources = [
+  'src/bytes.cc',
   'src/error.cc',
   'src/print.cc',
   'src/str.cc',

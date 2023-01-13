@@ -27,6 +27,7 @@ AlwaysBreakTemplateDeclarations: Yes
 BreakBeforeConceptDeclarations: true
 BreakConstructorInitializers: BeforeComma
 SpaceAfterTemplateKeyword: true
+SpaceAfterCStyleCast: true
 PointerAlignment: Right
 ReferenceAlignment: Left
 PPIndentWidth: 1

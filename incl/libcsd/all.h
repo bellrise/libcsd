@@ -4,6 +4,7 @@
 #pragma once
 
 #include <libcsd/box.h>
+#include <libcsd/bytes.h>
 #include <libcsd/error.h>
 #include <libcsd/format.h>
 #include <libcsd/list.h>
