@@ -32,7 +32,13 @@ struct bytes
 	void copy_to(byte *raw_ptr, int nbytes) const;
 	void zero();
 
-	byte *unsafe_ptr();
+	byte *raw_ptr() const;
+
+	template <typename T>
+	void copy_from(const T *any_ptr, int nbytes)
+	{
+		copy_from((const byte *) any_ptr, nbytes);
+	}
 
     private:
 	byte *m_ptr;

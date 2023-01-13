@@ -1,6 +1,7 @@
 /* libcsd/src/str.cc
    Copyright (c) 2022-2023 bellrise */
 
+#include <libcsd/bytes.h>
 #include <libcsd/error.h>
 #include <new>
 #include <stdio.h>
@@ -122,6 +123,17 @@ int str::len() const
 str str::to_str() const
 {
 	return str(*this);
+}
+
+bytes str::to_bytes() const
+{
+	bytes buf;
+
+	buf.alloc(m_len + 1);
+	buf.zero();
+	buf.copy_from(m_ptr, m_len);
+
+	return buf;
 }
 
 void str::print() const

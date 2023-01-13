@@ -108,7 +108,7 @@ void bytes::copy_to(byte *raw_ptr, int nbytes) const
 	memmove(raw_ptr, m_ptr, to_copy);
 }
 
-bytes::byte *bytes::unsafe_ptr()
+bytes::byte *bytes::raw_ptr() const
 {
 	return m_ptr;
 }

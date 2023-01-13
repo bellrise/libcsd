@@ -5,6 +5,7 @@
 
 #include <stddef.h>
 
+struct bytes;
 struct str;
 
 namespace csd {
@@ -65,6 +66,7 @@ struct str
 	/* Stat methods */
 	int len() const;
 	str to_str() const;
+	bytes to_bytes() const;
 	void print() const;
 	bool empty() const;
 
