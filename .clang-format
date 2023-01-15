@@ -9,14 +9,17 @@ IndentCaseLabels: false
 AccessModifierOffset: -4
 IndentAccessModifiers: false
 AllowShortFunctionsOnASingleLine: Empty
-AllowShortLambdasOnASingleLine: Inline
-BreakBeforeBraces: Custom
+AllowShortLambdasOnASingleLine: None
+BreakBeforeConceptDeclarations: true
+BreakConstructorInitializers: BeforeComma
 BreakBeforeBinaryOperators: NonAssignment
+BreakBeforeBraces: Custom
 BraceWrapping:
   AfterEnum: true
   AfterStruct: true
   AfterFunction: true
   AfterClass: true
+  AfterUnion: true
   SplitEmptyFunction: false
   SplitEmptyRecord: false
   BeforeCatch: false
@@ -24,13 +27,31 @@ BraceWrapping:
   BeforeLambdaBody: false
   BeforeWhile: false
 AlwaysBreakTemplateDeclarations: Yes
-BreakBeforeConceptDeclarations: true
-BreakConstructorInitializers: BeforeComma
 SpaceAfterTemplateKeyword: true
 SpaceAfterCStyleCast: true
 PointerAlignment: Right
 ReferenceAlignment: Left
-PPIndentWidth: 1
 AlignOperands: AlignAfterOperator
+AlignConsecutiveMacros: true
 ColumnLimit: 80
+SpaceBeforeSquareBrackets: false
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeParens: Custom
+SpaceBeforeParensOptions:
+  AfterControlStatements: true
+  AfterFunctionDefinitionName: false
+  AfterOverloadedOperator: false
+SpacesInCStyleCastParentheses: false
+BitFieldColonSpacing: Both
+EmptyLineAfterAccessModifier: Never
+EmptyLineBeforeAccessModifier: LogicalBlock
+IndentGotoLabels: false
+IndentPPDirectives: AfterHash
+PPIndentWidth: 1
+
+# Experimental
+SpaceInEmptyBlock: true
+
+# Maybe this should be `Leave` if something goes wrong
+SeparateDefinitionBlocks: Always
 ...

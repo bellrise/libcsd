@@ -75,11 +75,11 @@ using remove_const = typename remove_const_s<T>::type;
 
 template <typename T, typename U>
 struct same_type_s : false_result
-{};
+{ };
 
 template <typename T>
 struct same_type_s<T, T> : true_result
-{};
+{ };
 
 /**
  * @var same_type<T, U>
@@ -119,5 +119,11 @@ constexpr inline base_type<T>&& move(T&& thing)
 {
 	return static_cast<base_type<T>&&>(thing);
 }
+
+template <typename F, typename R, typename... Args>
+concept Signature = requires(F f, R r, Args... args)
+{
+	static_cast<R>(f(args...));
+};
 
 } // namespace csd

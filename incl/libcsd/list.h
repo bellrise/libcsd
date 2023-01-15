@@ -18,8 +18,8 @@
 template <typename T>
 struct list
 {
-	using filter_consumer = routine<bool, const T&>;
-	using apply_consumer = routine<void, T&>;
+	using filter_consumer = routine<bool(const T&)>;
+	using apply_consumer = routine<void(T&)>;
 	using iterator = csd::iterator<T, T **, T&>;
 	using const_iterator = csd::iterator<T, T **, const T&>;
 
@@ -27,7 +27,7 @@ struct list
 	    : m_space(0)
 	    , m_len(0)
 	    , m_ptr(nullptr)
-	{}
+	{ }
 
 	template <typename... Vt>
 	list(Vt... values)
@@ -172,7 +172,7 @@ struct list
 	 * The lambda in this case only returns true if the number is smaller
 	 * than 3, meaning only { 1, 2 } will be kept from the initial list.
 	 */
-	list<T>& filter(filter_consumer consumer)
+	list& filter(filter_consumer consumer)
 	{
 		list<int> to_remove;
 
@@ -191,7 +191,7 @@ struct list
 	 * similarly to the filter consumer using a lambda, but the argument
 	 * passed is of type `T&`, which can be modified.
 	 */
-	list<T>& apply(apply_consumer consumer)
+	list& apply(apply_consumer consumer)
 	{
 		for (T& item : *this)
 			consumer(item);
@@ -367,7 +367,7 @@ struct list
 		   strategy for large arrays. */
 		int new_size = 1024;
 		for (int i = 0; i < 10; i++) {
-			if ((int)(1 << i) < n)
+			if ((int) (1 << i) < n)
 				continue;
 			new_size = (1 << i);
 			break;

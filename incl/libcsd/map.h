@@ -46,7 +46,7 @@ struct map
 
 	map(map&& moved_map)
 	    : m_pairs(csd::move(moved_map.m_pairs))
-	{}
+	{ }
 
 	list<K> keys() const
 	{
@@ -126,10 +126,11 @@ struct map
 		return *this;
 	}
 
-	template <csd::IsComparable<K> T>
-	map& remove(const T& key)
+	map& remove(const K& key)
 	{
-		m_pairs.filter([&](const pair& kv) { return kv.key != key; });
+		m_pairs.filter([key = key](const pair& kv) {
+			return kv.key != key;
+		});
 
 		return *this;
 	}
@@ -248,8 +249,8 @@ struct map
 			return false;
 
 		for (int i = 0; i < len(); i++) {
-			if (m_pairs[i].key != other.m_pairs[i].key ||
-			    m_pairs[i].value != other.m_pairs[i].value)
+			if (m_pairs[i].key != other.m_pairs[i].key
+			    || m_pairs[i].value != other.m_pairs[i].value)
 				return false;
 		}
 

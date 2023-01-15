@@ -56,7 +56,7 @@ Global symbols exposed by the library:
 	box<T>                  heap allocated T
 	list<T>                 dynamically resized array
 	maybe<T>                possibly a value, used as a return type
-	routine<R, ...P>        thin wrapper around a function pointer
+	routine<R(Args...)>     thin wrapper around a function
 	str                     basic string
 	bytes                   contiguous array of raw bytes
 	print()                 print n things
