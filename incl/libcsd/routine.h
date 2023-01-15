@@ -6,6 +6,7 @@
 #include <libcsd/bytes.h>
 #include <libcsd/detail.h>
 #include <libcsd/error.h>
+#include <libcsd/format.h>
 #include <stddef.h>
 
 template <typename...>
@@ -73,32 +74,55 @@ struct routine<R(Args...)>
 	using return_type = R;
 	using type = R (*)(Args...);
 
+	constexpr static int n_args = sizeof...(Args);
+
 	routine()
 	    : m_emplace(nullptr)
 	    , m_invoke(nullptr)
+	    , m_ptr(nullptr)
 	{ }
 
 	template <csd::Signature<R, Args...> F>
 	routine(F routine)
 	    : m_emplace(reinterpret_cast<emplace_type>(emplace_impl<F>))
 	    , m_invoke(reinterpret_cast<invoke_type>(invoke_impl<F>))
+	    , m_ptr(nullptr)
 	{
 		m_container.alloc(sizeof(routine));
 		m_emplace((char *) m_container.raw_ptr(),
 			  reinterpret_cast<char *>(&routine));
 	}
 
+	routine(type routine)
+	    : m_emplace(nullptr)
+	    , m_invoke(nullptr)
+	    , m_ptr(routine)
+	{ }
+
 	bool has_routine() const
 	{
-		return !!m_container.size();
+		return !!m_container.size() || m_ptr;
 	}
 
 	R operator()(Args... args) const
 	{
+		if (m_ptr)
+			return m_ptr(args...);
+
 		if (!m_container.size())
 			throw csd::nullptr_exception(
 			    "routine missing function pointer");
 		return m_invoke((char *) m_container.raw_ptr(), args...);
+	}
+
+	str to_str() const
+	{
+		if (m_ptr) {
+			return csd::format("<weak routine at {} n_args={}>",
+					   (void *) m_ptr, n_args);
+		}
+
+		return csd::format("<routine object n_args={}>", n_args);
 	}
 
     private:
@@ -108,6 +132,7 @@ struct routine<R(Args...)>
 	bytes m_container;
 	emplace_type m_emplace;
 	invoke_type m_invoke;
+	type m_ptr;
 
 	template <typename F>
 	static void emplace_impl(F *container, F *func)
