@@ -126,4 +126,15 @@ concept Signature = requires(F f, R r, Args... args)
 	static_cast<R>(f(args...));
 };
 
+/**
+ * @concept
+ * Any F that is callable or implements the () operator, and takes the correct
+ * amount & types of arguments.
+ */
+template <typename F, typename... Args>
+concept Callable = requires(F f, Args... args)
+{
+	f(args...);
+};
+
 } // namespace csd

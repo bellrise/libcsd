@@ -9,7 +9,7 @@
 #include <libcsd/format.h>
 #include <stddef.h>
 
-template <typename...>
+template <typename R>
 struct routine;
 
 /**
@@ -82,7 +82,9 @@ struct routine<R(Args...)>
 	    , m_ptr(nullptr)
 	{ }
 
-	template <csd::Signature<R, Args...> F>
+	// TODO: restrain F to csd::Symbol<F, R, Args...> to also specify the
+	// return type, instead of just requiring is_callable & n args.
+	template <csd::Callable<Args...> F>
 	routine(F routine)
 	    : m_emplace(reinterpret_cast<emplace_type>(emplace_impl<F>))
 	    , m_invoke(reinterpret_cast<invoke_type>(invoke_impl<F>))
