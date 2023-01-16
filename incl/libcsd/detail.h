@@ -120,12 +120,6 @@ constexpr inline base_type<T>&& move(T&& thing)
 	return static_cast<base_type<T>&&>(thing);
 }
 
-template <typename F, typename R, typename... Args>
-concept Signature = requires(F f, R r, Args... args)
-{
-	static_cast<R>(f(args...));
-};
-
 /**
  * @concept
  * Any F that is callable or implements the () operator, and takes the correct

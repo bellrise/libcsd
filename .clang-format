@@ -1,5 +1,6 @@
 ---
 Language: Cpp
+Standard: c++20
 IncludeBlocks: Regroup
 UseTab: ForContinuationAndIndentation
 AllowShortIfStatementsOnASingleLine: false
@@ -10,7 +11,7 @@ AccessModifierOffset: -4
 IndentAccessModifiers: false
 AllowShortFunctionsOnASingleLine: Empty
 AllowShortLambdasOnASingleLine: None
-BreakBeforeConceptDeclarations: true
+BreakBeforeConceptDeclarations: yes
 BreakConstructorInitializers: BeforeComma
 BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeBraces: Custom
@@ -53,5 +54,5 @@ PPIndentWidth: 1
 SpaceInEmptyBlock: true
 
 # Maybe this should be `Leave` if something goes wrong
-SeparateDefinitionBlocks: Always
+SeparateDefinitionBlocks: Leave
 ...

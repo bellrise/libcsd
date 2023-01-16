@@ -82,8 +82,6 @@ struct routine<R(Args...)>
 	    , m_ptr(nullptr)
 	{ }
 
-	// TODO: restrain F to csd::Symbol<F, R, Args...> to also specify the
-	// return type, instead of just requiring is_callable & n args.
 	template <csd::Callable<Args...> F>
 	routine(F routine)
 	    : m_emplace(reinterpret_cast<emplace_type>(emplace_impl<F>))
@@ -93,6 +91,25 @@ struct routine<R(Args...)>
 		m_container.alloc(sizeof(routine));
 		m_emplace((char *) m_container.raw_ptr(),
 			  reinterpret_cast<char *>(&routine));
+	}
+
+	routine(const routine& copy)
+	    : m_emplace(copy.m_emplace)
+	    , m_invoke(copy.m_invoke)
+	    , m_container(csd::move(copy.m_container.copy()))
+	    , m_ptr(copy.m_ptr)
+	{ }
+
+	routine(routine&& moved)
+	    : m_emplace(moved.m_emplace)
+	    , m_invoke(moved.m_invoke)
+	    , m_container(csd::move(moved.m_container))
+	    , m_ptr(moved.m_ptr)
+	{
+		moved.m_emplace = nullptr;
+		moved.m_invoke = nullptr;
+		moved.m_container = bytes();
+		moved.m_ptr = nullptr;
 	}
 
 	routine(type routine)
@@ -111,29 +128,40 @@ struct routine<R(Args...)>
 		if (m_ptr)
 			return m_ptr(args...);
 
-		if (!m_container.size())
+		if (!m_container.size()) {
 			throw csd::nullptr_exception(
 			    "routine missing function pointer");
+		}
+
 		return m_invoke((char *) m_container.raw_ptr(), args...);
+	}
+
+	routine& operator=(const routine& other)
+	{
+		return *this(other);
+	}
+
+	bool operator!() const
+	{
+		return !has_routine();
 	}
 
 	str to_str() const
 	{
-		if (m_ptr) {
-			return csd::format("<weak routine at {} n_args={}>",
-					   (void *) m_ptr, n_args);
-		}
-
-		return csd::format("<routine object n_args={}>", n_args);
+		return csd::format(
+		    "<{} n_args={}>",
+		    m_ptr ? csd::format("weak routine at {}", (void *) m_ptr)
+			  : "routine object",
+		    n_args);
 	}
 
     private:
 	using emplace_type = void (*)(void *, void *);
 	using invoke_type = R (*)(void *, Args...);
 
-	bytes m_container;
 	emplace_type m_emplace;
 	invoke_type m_invoke;
+	bytes m_container;
 	type m_ptr;
 
 	template <typename F>
@@ -145,6 +173,7 @@ struct routine<R(Args...)>
 	template <typename F>
 	static R invoke_impl(F *func, Args... args)
 	{
+		static_assert(csd::same_type<decltype((*func)(args...)), R>);
 		return (*func)(args...);
 	}
 };
