@@ -7,7 +7,9 @@
 
 /**
  * @class bytes
- * Represents a contiguous array of raw read/write accesible bytes.
+ * Continguous array of read/write bytes. By default, an array is allocated on
+ * the heap, but you may provide a custom buffer with a size, but then the bytes
+ * type will no longer be able to resize the buffer.
  */
 struct bytes
 {
@@ -17,9 +19,12 @@ struct bytes
 	bytes(bytes&& moved_bytes);
 	~bytes();
 
-	/* A byte array cannot be implicitly copied, as it may result in some
-	   unexpected behaviour. Use ::copy() instead, to explicitly create a
-	   copy. */
+	/**
+	 * @method copy constructor
+	 * The implicit copy constructor is deleted, as it may result in some
+	 * unexpected behaviour. Use ::copy() instead, to explicitly create a
+	 * copy.
+	 */
 	bytes(const bytes& copied_bytes) = delete;
 
 	int size() const;

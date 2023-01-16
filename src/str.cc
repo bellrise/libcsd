@@ -11,7 +11,7 @@ str::str()
     : m_ptr(nullptr)
     , m_space(0)
     , m_len(0)
-{}
+{ }
 
 str::str(const str& other)
     : m_ptr(nullptr)
@@ -263,11 +263,7 @@ int str::resolve_index(int index) const
 
 int str::resize(int nbytes)
 {
-	/* Our implementation of resize() only resizes up, without any
-	   downsizes. This means that if we request a small size of bytes, we
-	   keep the old buffer, and alloc a new one only if we don't have enough
-	   space. */
-
+	/* Our implementation of resize() only resizes up. */
 	if (m_space >= nbytes)
 		return m_space;
 
@@ -279,7 +275,6 @@ int str::resize(int nbytes)
 		return m_space;
 	}
 
-	/* Copy the memory from the old buffer to the new one. */
 	memmove(m_ptr, old_ptr, m_space);
 	m_space = nbytes;
 

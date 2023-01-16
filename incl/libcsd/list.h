@@ -45,7 +45,7 @@ struct list
 	    , m_len(copied_list.len())
 	    , m_ptr(nullptr)
 	{
-		resize(m_len);
+		allocate_atleast(m_len);
 		copy_range(m_ptr, copied_list.m_ptr, m_len);
 	}
 
@@ -71,7 +71,7 @@ struct list
 
 	list& append(const T& copied_value)
 	{
-		resize(++m_len);
+		allocate_atleast(++m_len);
 		m_ptr[m_len - 1] = new T(copied_value);
 		return *this;
 	}
@@ -79,7 +79,7 @@ struct list
 	template <csd::IsMovable V>
 	list& append(V&& moved_value)
 	{
-		resize(++m_len);
+		allocate_atleast(++m_len);
 		m_ptr[m_len - 1] = new T(csd::move(moved_value));
 		return *this;
 	}
@@ -100,7 +100,7 @@ struct list
 			m_ptr[i + 1] = nullptr;
 		}
 
-		resize(--m_len);
+		allocate_atleast(--m_len);
 	}
 
 	void remove_many(list<int> indices)
@@ -128,7 +128,7 @@ struct list
 		}
 
 		m_len -= indices.len();
-		resize(m_len);
+		allocate_atleast(m_len);
 	}
 
 	template <csd::IsComparable<T> V>
@@ -235,7 +235,7 @@ struct list
 		}
 
 		m_len -= indices.len();
-		resize(m_len);
+		allocate_atleast(m_len);
 	}
 
 	str to_str() const
@@ -355,16 +355,19 @@ struct list
 		return index;
 	}
 
-	/* Allocate enough space for n elements. */
-	void resize(int n)
+	/**
+	 * @method allocate_atleast
+	 * Allocate some memory to at least n slots. The allocation size is
+	 * always the nearest power of 2, with the max of a 1024 slot step. This
+	 * ensures reasonable allocation sizes for small arrays (2, 4, 8, ...
+	 * elements) and a increasingly more hungry allocation strategy for
+	 * large arrays (allocates another 1024 slots per call).
+	 */
+	void allocate_atleast(int n)
 	{
 		if (m_space >= n)
 			return;
 
-		/* Allocate to the nearest power of 2, or 1024 elements if the
-		   total required size is over 1024. This will ensure a small
-		   memory footprint for tiny arrays, but an over-allocation
-		   strategy for large arrays. */
 		int new_size = 1024;
 		for (int i = 0; i < 10; i++) {
 			if ((int) (1 << i) < n)
@@ -376,7 +379,6 @@ struct list
 		if (n > 1024)
 			new_size = ((n >> 10) << 10) + 1024;
 
-		/* Previously empty buffer. */
 		if (m_ptr == nullptr) {
 			m_ptr = new T *[new_size];
 			zero_range(m_ptr, 0, new_size);
@@ -384,8 +386,6 @@ struct list
 			return;
 		}
 
-		/* We already allocated something, so we need to create a new
-		   buffer and copy the old pointers to the new buffer. */
 		T **old_ptr = m_ptr;
 
 		m_ptr = new T *[new_size];
@@ -424,7 +424,7 @@ struct list
 	template <typename U>
 	str string_repr() const
 	{
-		return "[non-printable list]";
+		return "<list (non-printable elements)>";
 	}
 
 	template <csd::StringConvertible U>
@@ -439,7 +439,6 @@ struct list
 			builder += str(*m_ptr[i]) + ", ";
 
 		builder += str(*m_ptr[len() - 1]);
-
 		return builder + ']';
 	}
 

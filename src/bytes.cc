@@ -11,7 +11,7 @@ bytes::bytes()
     : m_ptr(nullptr)
     , m_size(0)
     , m_user_provided(false)
-{}
+{ }
 
 bytes::bytes(bytes&& moved_bytes)
     : m_ptr(moved_bytes.m_ptr)
@@ -126,7 +126,6 @@ bytes& bytes::operator=(const bytes& other)
 	if (!m_user_provided && m_ptr)
 		delete[] m_ptr;
 
-	/* release the old pointer */
 	m_user_provided = false;
 	m_ptr = nullptr;
 

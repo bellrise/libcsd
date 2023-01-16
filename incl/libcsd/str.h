@@ -48,22 +48,19 @@ struct str
 	str(const char *string);
 	str(const char *string, int maxlen);
 
-	/* Conversion constructors */
 	str(void *pointer);
 	str(size_t number);
 	str(float number);
 	str(int number);
 	str(char c);
 
-	/* Accept anything that can be converted into a string. */
 	template <csd::ImplementsToString T>
 	str(const T& object)
 	    : str(object.to_str())
-	{}
+	{ }
 
 	~str();
 
-	/* Stat methods */
 	int len() const;
 	str to_str() const;
 	bytes to_bytes() const;

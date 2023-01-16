@@ -17,7 +17,7 @@ struct iterator
 
 	iterator(Pointer ptr)
 	    : m_ptr(ptr)
-	{}
+	{ }
 
 	/**
 	 * @method operator*
@@ -26,14 +26,12 @@ struct iterator
 	 */
 	Reference operator*() const
 	{
-		if constexpr (same_type<T ***, Pointer>) {
+		if constexpr (same_type<T ***, Pointer>)
 			return ***m_ptr;
-		}
-		if constexpr (same_type<T **, Pointer>) {
+		else if constexpr (same_type<T **, Pointer>)
 			return **m_ptr;
-		} else {
+		else
 			return *m_ptr;
-		}
 	}
 
 	Pointer operator->()
