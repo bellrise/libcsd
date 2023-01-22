@@ -1,0 +1,5 @@
+Name: csd
+Description: Custom base library for C++20 based on libc.
+Version: 0.1
+URL: https://github.com/bellrise/libcsd
+Libs: -lcsd
