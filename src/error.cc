@@ -70,4 +70,13 @@ str memory_exception::message() const
 	return str("memory_exception: ") + m_message;
 }
 
+unsupported_operation_exeception::unsupported_operation_exeception(const str& message)
+    : m_message(message)
+{}
+
+str unsupported_operation_exeception::message() const
+{
+	return str("unsupported_operation_exeception: ") + m_message;
+}
+
 } // namespace csd

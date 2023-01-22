@@ -8,9 +8,9 @@ sources = [
   'src/str.cc',
 ]
 
-includes = include_directories('../incl')
+includes = include_directories('include')
 lib = static_library('csd', sources, include_directories: includes,
-  cpp_args: ['-O3', '-Wall', '-Wextra'], prelink: true, install: true)
+  cpp_args: ['-O3', '-Wall', '-Wextra'], prelink: false, install: true)
 
 # For testing
 if fs.is_file('main.cc')
