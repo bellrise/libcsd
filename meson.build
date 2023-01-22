@@ -4,6 +4,7 @@ fs = import('fs')
 sources = [
   'src/bytes.cc',
   'src/error.cc',
+  'src/file.cc',
   'src/print.cc',
   'src/str.cc',
 ]

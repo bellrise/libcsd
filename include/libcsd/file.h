@@ -1,77 +1,42 @@
 /* <libcsd/file.h>
-    Copyright (c) 2022-2023 bellrise */
+    Copyright (c) 2023 bellrise */
 
 #pragma once
 
+#include <libcsd/error.h>
 #include <libcsd/list.h>
 #include <libcsd/str.h>
-#include <libcsd/error.h>
-
 #include <stdio.h>
+
+/*
+ * TODO for csd::file:
+ * The type should implement open() instead of opening the file while writing or
+ * reading. If the constructor takes a path, it should be obvious that the file
+ * is opened, and not kept close until you try to write to it.
+ *
+ * A pair of read/write methods for bytes should be provided for binary files.
+ *
+ * Replace a FILE with the underlying POSIX file descriptor.
+ */
 
 namespace csd {
 
-class file {
-	FILE *fp;
-	str path;
-	str mode;
-	bool state = 0;
+struct file
+{
+	file(const str& path, const str& mode);
+	~file();
 
-	bool is_readable()
-	{
-		list<str> modes { "r", "r+", "w+", "a+" };
+	void write(str s);
+	str readlines();
 
-		for (auto m : modes) {
-			if (m == mode)
-				return true;
-		}
+    private:
+	FILE *m_fp;
+	str m_path;
+	str m_mode;
+	bool m_state = false;
 
-		return false;
-	}
-
-	bool is_writable()
-	{
-		list<str> modes { "r+", "w", "w+", "a", "a+" };
-
-		for (auto m : modes) {
-			if (m == mode)
-				return true;
-		}
-
-		return false;
-	}
-
-	public:
-	file(str path, str mode)
-		: path(path), mode(mode) {}
-
-	~file()
-	{ if (state) fclose(fp); }
-
-	void write(str s)
-	{
-		if (!is_writable())
-			throw csd::unsupported_operation_exeception("not writable");
-
-		if (!state)
-			fp = fopen(path.unsafe_ptr(), mode.unsafe_ptr());
-
-		fputs(s.unsafe_ptr(), fp);
-	}
-
-	str readlines()
-	{
-		int c;
-		str s;
-
-		if (!is_readable())
-			throw csd::unsupported_operation_exeception("not readable");
-
-		while ((c = fgetc(fp)) != EOF)
-			s.append(c);
-
-		return s;
-	}
+	bool is_readable();
+	bool is_writable();
 };
 
-}
+} // namespace csd

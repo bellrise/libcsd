@@ -4,7 +4,6 @@
 #pragma once
 
 #include <libcsd/str.h>
-#include <libcsd/file.h>
 
 namespace csd {
 
@@ -83,9 +82,13 @@ struct memory_exception : public any_exception
 	str m_message;
 };
 
-struct unsupported_operation_exeception : public any_exception
+/**
+ * @exception invalid_operation_exception
+ * An operation that cannot be carried out.
+ */
+struct invalid_operation_exception : public any_exception
 {
-	unsupported_operation_exeception(const str& message);
+	invalid_operation_exception(const str& message);
 
 	str message() const override;
 

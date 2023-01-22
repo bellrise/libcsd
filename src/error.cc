@@ -11,7 +11,7 @@ index_exception::index_exception(int index)
     : m_has_bounds(false)
     , m_str_index()
     , m_index(index)
-{}
+{ }
 
 index_exception::index_exception(const str& str_index)
     : m_has_bounds(false)
@@ -24,7 +24,7 @@ index_exception::index_exception(int index, int min, int max)
     , m_index(index)
     , m_min(min)
     , m_max(max)
-{}
+{ }
 
 str index_exception::message() const
 {
@@ -48,7 +48,7 @@ str unpack_exception::message() const
 
 nullptr_exception::nullptr_exception()
     : m_message("nullptr_exception: expected value, found null pointer")
-{}
+{ }
 
 nullptr_exception::nullptr_exception(const str& message)
     : m_message("nullptr_exception: ")
@@ -63,20 +63,20 @@ str nullptr_exception::message() const
 
 memory_exception::memory_exception(const str& message)
     : m_message(message)
-{}
+{ }
 
 str memory_exception::message() const
 {
 	return str("memory_exception: ") + m_message;
 }
 
-unsupported_operation_exeception::unsupported_operation_exeception(const str& message)
+invalid_operation_exception::invalid_operation_exception(const str& message)
     : m_message(message)
-{}
+{ }
 
-str unsupported_operation_exeception::message() const
+str invalid_operation_exception::message() const
 {
-	return str("unsupported_operation_exeception: ") + m_message;
+	return str("invalid_operation_exception: ") + m_message;
 }
 
 } // namespace csd
