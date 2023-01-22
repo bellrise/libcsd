@@ -7,6 +7,7 @@
 #include <libcsd/iterator.h>
 #include <libcsd/routine.h>
 #include <libcsd/str.h>
+#include <libcsd/error.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
@@ -215,7 +216,7 @@ struct list
 			return;
 		}
 
-		for (size_t i = 0; i < indices.len(); i++) {
+		for (int i = 0; i < indices.len(); i++) {
 			if (indices[i] >= len())
 				throw csd::index_exception(i, 0, len() - 1);
 
@@ -290,7 +291,7 @@ struct list
 
 	/* non-comparable T & V */
 	template <typename V>
-	bool operator==(const list<V>& other) const
+	bool operator==([[maybe_unused]] const list<V>& other) const
 	{
 		return false;
 	}

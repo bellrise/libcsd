@@ -83,6 +83,11 @@ struct str
 	 */
 	str substr(int start_index, int length = -1) const;
 
+	const char *unsafe_ptr() const
+	{
+		return m_ptr;
+	}
+
 	/* Chain-modify methods */
 	str& replace(char from, char to);
 	str& append(const str& next);

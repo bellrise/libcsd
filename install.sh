@@ -8,4 +8,4 @@
 }
 
 cp ./build/libcsd.a /usr/local/lib/libcsd.a
-cp -r incl/libcsd /usr/include
+cp -r include/libcsd /usr/include
