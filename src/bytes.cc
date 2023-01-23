@@ -39,6 +39,20 @@ str bytes::to_str() const
 	return csd::format("<bytes {} size={}>", (void *) m_ptr, m_size);
 }
 
+str bytes::as_str() const
+{
+	int null_at = m_size;
+
+	for (int i = 0; i < m_size; i++) {
+		if (m_ptr[i] == 0x00) {
+			null_at = i;
+			break;
+		}
+	}
+
+	return str((const char *) m_ptr, null_at);
+}
+
 void bytes::alloc(int nbytes)
 {
 	if (m_user_provided) {

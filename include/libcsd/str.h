@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <libcsd/iterator.h>
 #include <stddef.h>
 
 struct bytes;
@@ -40,6 +41,8 @@ concept StringConvertible = ImplementsToString<T> || requires(T t)
  */
 struct str
 {
+	using iterator = csd::iterator<char>;
+
 	static constexpr int invalid_index = -1;
 
 	str();
@@ -109,6 +112,9 @@ struct str
 	 */
 	char& operator[](int index);
 	const char& operator[](int index) const;
+
+	const iterator begin() const;
+	const iterator end() const;
 
     protected:
 	char *m_ptr;

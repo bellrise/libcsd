@@ -29,6 +29,7 @@ struct bytes
 
 	int size() const;
 	str to_str() const;
+	str as_str() const;
 	bytes copy() const;
 
 	void alloc(int nbytes);

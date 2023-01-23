@@ -332,3 +332,13 @@ const char& str::operator[](int index) const
 {
 	return m_ptr[resolve_index(index)];
 }
+
+const str::iterator str::begin() const
+{
+	return iterator(&m_ptr[0]);
+}
+
+const str::iterator str::end() const
+{
+	return iterator(&m_ptr[m_len]);
+}
