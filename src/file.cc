@@ -1,69 +1,136 @@
 /* libcsd/src/file.cc
    Copyright (c) 2023 bellrise */
 
+#include <fcntl.h>
+#include <libcsd/bytes.h>
+#include <libcsd/error.h>
 #include <libcsd/file.h>
+#include <libcsd/format.h>
+#include <libcsd/print.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 namespace csd {
 
-file::file(const str& path, const str& mode)
-    : m_path(path)
-    , m_mode(mode)
+file::file()
+    : m_fd(-1)
+    , m_flags(ios_closed)
+    , m_path()
+    , m_mode()
 { }
 
 file::~file()
 {
-	if (m_state)
-		fclose(m_fp);
+	if (m_flags != ios_closed)
+		close();
 }
 
-void file::write(str s)
+void file::open(const str& path, const str& mode)
+{
+	int open_flags = 0;
+
+	m_path = path;
+	m_flags = (mode.find("r") == str::invalid_index ? 0 : ios_read)
+		| (mode.find("w") == str::invalid_index ? 0 : ios_write)
+		| (mode.find("b") == str::invalid_index ? 0 : ios_binary);
+
+	if (m_flags & ios_read)
+		open_flags |= O_RDONLY;
+	else if (m_flags & ios_write)
+		open_flags |= O_WRONLY;
+	else if (m_flags & (ios_write | ios_read))
+		open_flags |= O_RDWR;
+
+	m_fd = ::open(path.unsafe_ptr(), open_flags);
+	if (m_fd == -1) {
+		throw csd::invalid_operation_exception("failed to open file");
+		m_flags = ios_closed;
+	}
+}
+
+void file::close()
+{
+	if (m_flags)
+		::close(m_fd);
+	m_flags = 0;
+	m_fd = -1;
+}
+
+bool file::is_open() const
+{
+	return m_flags != ios_closed;
+}
+
+size_t file::write(const bytes& buf)
 {
 	if (!is_writable())
 		throw csd::invalid_operation_exception("not writable");
-
-	if (!m_state) {
-		m_fp = fopen(m_path.unsafe_ptr(), m_mode.unsafe_ptr());
-	}
-
-	fputs(s.unsafe_ptr(), m_fp);
+	return ::write(m_fd, buf.raw_ptr(), buf.size());
 }
 
-str file::readlines()
+bytes file::read(int size)
 {
-	int c;
-	str s;
+	int bytes_read;
+	bytes res;
+	char *buf;
 
 	if (!is_readable())
 		throw csd::invalid_operation_exception("not readable");
 
-	while ((c = fgetc(m_fp)) != EOF)
-		s.append(c);
+	buf = (char *) malloc(size);
+	bytes_read = ::read(m_fd, buf, size);
 
-	return s;
+	if (!bytes_read) {
+		free(buf);
+		return res;
+	}
+
+	res.alloc(bytes_read);
+	res.copy_from(buf, bytes_read);
+
+	free(buf);
+	return res;
+}
+
+size_t file::write_string(const str& s)
+{
+	return write(csd::move(s.to_bytes()));
+}
+
+str file::read_string(int size)
+{
+	return read(size).as_str();
+}
+
+str file::read_all()
+{
+	return read_string(size());
+}
+
+size_t file::size() const
+{
+	struct stat fs;
+
+	if (!is_open()) {
+		throw csd::invalid_operation_exception(
+		    "cannot get size of closed file");
+	}
+
+	if (fstat(m_fd, &fs) == -1)
+		throw csd::invalid_operation_exception("failed to stat file");
+
+	return fs.st_size;
 }
 
 bool file::is_readable()
 {
-	list<str> modes = {"r", "r+", "w+", "a+"};
-
-	for (auto& m : modes) {
-		if (m == m_mode)
-			return true;
-	}
-
-	return false;
+	return m_flags & ios_read;
 }
 
 bool file::is_writable()
 {
-	list<str> modes = {"r+", "w", "w+", "a", "a+"};
-
-	for (auto& m : modes) {
-		if (m == m_mode)
-			return true;
-	}
-
-	return false;
+	return m_flags & ios_write;
 }
 
 } // namespace csd

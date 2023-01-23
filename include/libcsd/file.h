@@ -4,36 +4,44 @@
 #pragma once
 
 #include <libcsd/error.h>
-#include <libcsd/list.h>
 #include <libcsd/str.h>
 #include <stdio.h>
-
-/*
- * TODO for csd::file:
- * The type should implement open() instead of opening the file while writing or
- * reading. If the constructor takes a path, it should be obvious that the file
- * is opened, and not kept close until you try to write to it.
- *
- * A pair of read/write methods for bytes should be provided for binary files.
- *
- * Replace a FILE with the underlying POSIX file descriptor.
- */
 
 namespace csd {
 
 struct file
 {
-	file(const str& path, const str& mode);
+	file();
 	~file();
 
-	void write(str s);
-	str readlines();
+	void open(const str& path, const str& mode);
+	void close();
+	bool is_open() const;
+
+	size_t write(const bytes& buf);
+	bytes read(int size);
+
+	size_t write_string(const str& s);
+	str read_string(int size);
+
+	str read_all();
+
+	/* Return the size of the file in bytes */
+	size_t size() const;
 
     private:
-	FILE *m_fp;
+	enum ios
+	{
+		ios_closed = 0,
+		ios_read = 1,
+		ios_write = 2,
+		ios_binary = 4
+	};
+
+	int m_fd;
+	int m_flags;
 	str m_path;
 	str m_mode;
-	bool m_state = false;
 
 	bool is_readable();
 	bool is_writable();
