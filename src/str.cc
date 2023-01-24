@@ -148,6 +148,11 @@ bool str::empty() const
 	return len() == 0;
 }
 
+bool str::contains(const str& substr) const
+{
+	return find(substr) != invalid_index;
+}
+
 int str::find(const str& substr) const
 {
 	if (len() < substr.len() || substr.len() == 0)
@@ -184,6 +189,19 @@ str& str::replace(char from, char to)
 			m_ptr[i] = to;
 	}
 
+	return *this;
+}
+
+str& str::replace(const str& substr, const str& replacement)
+{
+	str new_str;
+	int index;
+
+	if ((index = find(substr)) == invalid_index)
+		return *this;
+
+	*this = this->substr(0, index) + replacement
+	      + this->substr(index + substr.len());
 	return *this;
 }
 

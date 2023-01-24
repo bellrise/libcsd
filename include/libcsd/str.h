@@ -17,10 +17,7 @@ namespace csd {
  * any other str-constructible type.
  */
 template <typename T>
-concept ImplementsToString = requires(T t)
-{
-	static_cast<str>(t.to_str());
-};
+concept ImplementsToString = requires(T t) { static_cast<str>(t.to_str()); };
 
 /**
  * @concept StringConvertible
@@ -28,10 +25,8 @@ concept ImplementsToString = requires(T t)
  * .to_str() method or can be passed into one of the str constructors.
  */
 template <typename T>
-concept StringConvertible = ImplementsToString<T> || requires(T t)
-{
-	static_cast<str>(t);
-};
+concept StringConvertible =
+    ImplementsToString<T> || requires(T t) { static_cast<str>(t); };
 
 } // namespace csd
 
@@ -69,6 +64,7 @@ struct str
 	bytes to_bytes() const;
 	void print() const;
 	bool empty() const;
+	bool contains(const str& substr) const;
 
 	/**
 	 * @method find
@@ -93,6 +89,7 @@ struct str
 
 	/* Chain-modify methods */
 	str& replace(char from, char to);
+	str& replace(const str& substr, const str& replacement);
 	str& append(const str& next);
 	str& append(const char *next);
 
