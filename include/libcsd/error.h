@@ -4,6 +4,7 @@
 #pragma once
 
 #include <libcsd/str.h>
+#include <stdexcept>
 
 namespace csd {
 
@@ -89,6 +90,20 @@ struct memory_exception : public any_exception
 struct invalid_operation_exception : public any_exception
 {
 	invalid_operation_exception(const str& message);
+
+	str message() const override;
+
+    private:
+	str m_message;
+};
+
+/**
+ * @exception invalid_argument_exception
+ * The argument passed to a function is invalid or contains some invalid data.
+ */
+struct invalid_argument_exception : public any_exception
+{
+	invalid_argument_exception(const str& message);
 
 	str message() const override;
 

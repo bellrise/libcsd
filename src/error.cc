@@ -79,4 +79,12 @@ str invalid_operation_exception::message() const
 	return str("invalid_operation_exception: ") + m_message;
 }
 
+invalid_argument_exception::invalid_argument_exception(const str& message)
+    : m_message(message)
+{ }
+
+str invalid_argument_exception::message() const
+{
+	return str("invalid_argument_exception: ") + m_message;
+}
 } // namespace csd
