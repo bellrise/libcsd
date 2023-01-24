@@ -4,10 +4,10 @@
 #pragma once
 
 #include <libcsd/detail.h>
+#include <libcsd/error.h>
 #include <libcsd/iterator.h>
 #include <libcsd/routine.h>
 #include <libcsd/str.h>
-#include <libcsd/error.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
@@ -246,9 +246,10 @@ struct list
 
 	/* Operator overloads. */
 
-	list<T>& operator=(const list<T>& other)
+	list& operator=(const list& other)
 	{
-		return this(other);
+		copy_from(other);
+		return *this;
 	}
 
 	T& operator[](size_t index)
@@ -443,7 +444,18 @@ struct list
 		return builder + ']';
 	}
 
+	void copy_from(const list& other_list)
+	{
+		clear();
+		for (const auto& v : other_list)
+			append(v);
+	}
+
 	int m_space;
 	int m_len;
 	T **m_ptr;
 };
+
+namespace csd {
+list<str> split_str(str to_split, const str& by);
+}
