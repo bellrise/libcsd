@@ -11,7 +11,7 @@ AccessModifierOffset: -4
 IndentAccessModifiers: false
 AllowShortFunctionsOnASingleLine: Empty
 AllowShortLambdasOnASingleLine: None
-BreakBeforeConceptDeclarations: yes
+# BreakBeforeConceptDeclarations: yes
 BreakConstructorInitializers: BeforeComma
 BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeBraces: Custom

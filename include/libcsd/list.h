@@ -89,6 +89,7 @@ struct list
 	{
 		for (const T& elem : other_list)
 			append(elem);
+		return *this;
 	}
 
 	void remove(int index)
@@ -173,7 +174,7 @@ struct list
 	 * The lambda in this case only returns true if the number is smaller
 	 * than 3, meaning only { 1, 2 } will be kept from the initial list.
 	 */
-	list& filter(filter_consumer consumer)
+	list& filter(auto consumer)
 	{
 		list<int> to_remove;
 
@@ -192,7 +193,7 @@ struct list
 	 * similarly to the filter consumer using a lambda, but the argument
 	 * passed is of type `T&`, which can be modified.
 	 */
-	list& apply(apply_consumer consumer)
+	list& apply(auto consumer)
 	{
 		for (T& item : *this)
 			consumer(item);

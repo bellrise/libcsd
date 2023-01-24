@@ -5,6 +5,8 @@ sources = [
   'src/bytes.cc',
   'src/error.cc',
   'src/file.cc',
+  'src/list.cc',
+  'src/path.cc',
   'src/print.cc',
   'src/str.cc',
 ]
