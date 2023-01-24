@@ -150,7 +150,7 @@ bool str::empty() const
 
 int str::find(const str& substr) const
 {
-	if (len() < substr.len())
+	if (len() < substr.len() || substr.len() == 0)
 		return invalid_index;
 
 	for (int i = 0; i <= len() - substr.len(); i++) {
