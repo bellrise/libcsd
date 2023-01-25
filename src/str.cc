@@ -153,6 +153,20 @@ bool str::contains(const str& substr) const
 	return find(substr) != invalid_index;
 }
 
+bool str::begins_with(const str& other) const
+{
+	if (len() < other.len())
+		return false;
+	return other == substr(0, other.len());
+}
+
+bool str::ends_with(const str& other) const
+{
+	if (len() < other.len())
+		return false;
+	return other == substr(len() - other.len());
+}
+
 int str::find(const str& substr) const
 {
 	if (len() < substr.len() || substr.len() == 0)

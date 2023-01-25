@@ -65,6 +65,8 @@ struct str
 	void print() const;
 	bool empty() const;
 	bool contains(const str& substr) const;
+	bool begins_with(const str& other) const;
+	bool ends_with(const str& other) const;
 
 	/**
 	 * @method find
