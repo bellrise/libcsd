@@ -3,23 +3,17 @@
 #include <libcsd/map.h>
 
 using pthread_t = unsigned long;
-using fptr_t = void *(*)(void*);
+using fptr_t = void *(*) (void *);
 
 namespace csd
 {
 
-class thread {
-	void *ret;
-	bool _is_running;
-	pthread_t id;
-	void run(fptr_t fptr, void *arg);
-
-	public:
-
+struct thread {
 	/* inherited */
 	thread() = default;
 	thread(fptr_t fptr);
 	thread(fptr_t fptr, void *arg);
+	~thread();
 	pthread_t getid() const;
 	int join();
 	void *get_result();
@@ -30,6 +24,12 @@ class thread {
 	bool operator==(const thread& other) const;
 	void operator()(fptr_t fptr, void *arg);
 	void operator()(fptr_t fptr);
+
+	private:
+	void *ret;
+	bool _is_running;
+	pthread_t id;
+	void run(fptr_t fptr, void *arg);
 };
 
-}
+} // namespace csd

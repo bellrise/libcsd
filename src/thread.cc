@@ -24,6 +24,11 @@ thread::thread(fptr_t fptr, void *arg)
 	run(fptr, arg);
 }
 
+thread::~thread()
+{
+	this->join();
+}
+
 pthread_t thread::getid() const
 {
 	return id;
