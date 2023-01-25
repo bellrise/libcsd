@@ -9,6 +9,7 @@ sources = [
   'src/path.cc',
   'src/print.cc',
   'src/str.cc',
+  'src/thread.cc',
 ]
 
 includes = include_directories('include')
