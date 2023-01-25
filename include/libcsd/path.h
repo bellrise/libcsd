@@ -35,6 +35,8 @@ struct path
 	bool is_dir() const;
 	bool exists() const;
 
+	list<path> dir_contents() const;
+
 	path& operator=(const path& copied_path);
 	path& operator=(path&& moved_path);
 
@@ -42,6 +44,7 @@ struct path
 	list<str> m_parts;
 	bool m_root;
 
+	list<str> resolve_parts(str path);
 	void set(str path);
 	void copy_from(const path& copied_path);
 	void move_from(path&& moved_path);

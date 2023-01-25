@@ -1,6 +1,7 @@
 /* libcsd/src/path.cc
    Copyright (c) 2023 bellrise */
 
+#include <dirent.h>
 #include <libcsd/error.h>
 #include <libcsd/list.h>
 #include <libcsd/path.h>
@@ -46,17 +47,6 @@ path::~path() { }
 path& path::add(const str& part)
 {
 	m_parts.append(part);
-	m_parts.filter([](const str& part) {
-		return part.len() != 0;
-	});
-
-	for (const str& part : m_parts) {
-		if (part == "..." || part == "....") {
-			throw csd::invalid_argument_exception(
-			    "there can only be one or two dots in a path part");
-		}
-	}
-
 	return *this;
 }
 
@@ -140,6 +130,29 @@ bool path::exists() const
 	return !access(absolute().to_str().unsafe_ptr(), F_OK);
 }
 
+list<path> path::dir_contents() const
+{
+	struct dirent *dir_thing;
+	DIR *dir;
+	list<path> contents;
+
+	dir = opendir(absolute().to_str().unsafe_ptr());
+
+	while ((dir_thing = readdir(dir))) {
+		if (str(dir_thing->d_name) == ".."
+		    || str(dir_thing->d_name) == ".") {
+			continue;
+		}
+
+		path one = absolute();
+		one.add(dir_thing->d_name);
+		contents.append(csd::move(one));
+	}
+
+	closedir(dir);
+	return contents;
+}
+
 path& path::operator=(const path& copied_path)
 {
 	copy_from(copied_path);
@@ -152,8 +165,10 @@ path& path::operator=(path&& moved_path)
 	return *this;
 }
 
-void path::set(str path)
+list<str> path::resolve_parts(str path)
 {
+	list<str> resolved;
+
 	if (path.len() == 0)
 		m_parts = list<str>();
 
@@ -165,15 +180,26 @@ void path::set(str path)
 
 	path.replace("~", get_user_home());
 
-	if (path[0] == '.') {
-		if (path.len() > 1 && path[1] != '.')
-			path = path.substr(1);
-	} else if (path[0] == '/') {
-		m_root = true;
+	if (path == ".") {
+		return list<str>();
+	} else if (path.begins_with("./")) {
+		path = path.substr(2);
+	} else if (path.begins_with("/")) {
 		path = path.substr(1);
+		m_root = true;
 	}
 
-	list<str> parts = split_str(path, "/");
+	resolved = split_str(path, "/");
+	resolved.filter([](const str& p) {
+		return p != '.' && !p.empty();
+	});
+
+	return resolved;
+}
+
+void path::set(str path)
+{
+	list<str> parts = resolve_parts(path);
 	for (auto&& part : parts)
 		add(part);
 }
