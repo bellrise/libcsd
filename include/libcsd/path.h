@@ -8,6 +8,10 @@
 
 namespace csd {
 
+/**
+ * @class path
+ * Store a system path to a file or directory.
+ */
 struct path
 {
 	path();
@@ -27,6 +31,9 @@ struct path
 	str filename() const;
 	path directory() const;
 	path absolute() const;
+	bool is_file() const;
+	bool is_dir() const;
+	bool exists() const;
 
 	path& operator=(const path& copied_path);
 	path& operator=(path&& moved_path);

@@ -1,13 +1,13 @@
 /* libcsd/src/path.cc
    Copyright (c) 2023 bellrise */
 
-#include "libcsd/error.h"
-
+#include <libcsd/error.h>
 #include <libcsd/list.h>
 #include <libcsd/path.h>
 #include <libcsd/print.h>
 #include <linux/limits.h>
 #include <pwd.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 namespace csd {
@@ -115,6 +115,29 @@ path path::absolute() const
 	path absolute_path = get_cwd();
 	absolute_path.m_parts.extend(m_parts);
 	return absolute_path;
+}
+
+bool path::is_file() const
+{
+	struct stat info;
+
+	if (lstat(absolute().to_str().unsafe_ptr(), &info))
+		return false;
+	return S_ISREG(info.st_mode);
+}
+
+bool path::is_dir() const
+{
+	struct stat info;
+
+	if (lstat(absolute().to_str().unsafe_ptr(), &info))
+		return false;
+	return S_ISDIR(info.st_mode);
+}
+
+bool path::exists() const
+{
+	return !access(absolute().to_str().unsafe_ptr(), F_OK);
 }
 
 path& path::operator=(const path& copied_path)
