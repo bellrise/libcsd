@@ -1,6 +1,7 @@
 #include <libcsd/thread.h>
-#include <pthread.h>
+
 #include <signal.h>
+#include <pthread.h>
 
 using namespace csd;
 
@@ -25,7 +26,7 @@ thread::thread(fptr_t fptr, void *arg)
 
 thread::~thread()
 {
-	/* TODO: implement proper destructor */
+	this->join();
 }
 
 pthread_t thread::getid() const

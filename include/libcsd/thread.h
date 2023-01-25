@@ -5,15 +5,14 @@
 using pthread_t = unsigned long;
 using fptr_t = void *(*) (void *);
 
-namespace csd {
-
-struct thread
+namespace csd
 {
+
+struct thread {
+	/* inherited */
 	thread() = default;
 	thread(fptr_t fptr);
 	thread(fptr_t fptr, void *arg);
-	~thread();
-
 	pthread_t getid() const;
 	int join();
 	void *get_result();
