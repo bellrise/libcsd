@@ -24,9 +24,9 @@ thread::thread(fptr_t fptr, void *arg)
 }
 
 thread::thread(thread&& moved_thread)
-    : m_id(moved_thread.m_id)
-    , m_ret(moved_thread.m_ret)
-    , m_busy(moved_thread.m_busy)
+	: m_id(moved_thread.m_id)
+	, m_ret(moved_thread.m_ret)
+	, m_busy(moved_thread.m_busy)
 {
 	moved_thread.m_id = 0;
 	moved_thread.m_ret = NULL;

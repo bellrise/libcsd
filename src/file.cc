@@ -14,10 +14,10 @@
 namespace csd {
 
 file::file()
-    : m_fd(-1)
-    , m_flags(ios_closed)
-    , m_path()
-    , m_mode()
+	: m_fd(-1)
+	, m_flags(ios_closed)
+	, m_path()
+	, m_mode()
 { }
 
 file::~file()
@@ -32,8 +32,8 @@ void file::open(const str& path, const str& mode)
 
 	m_path = path;
 	m_flags = (mode.find("r") == str::invalid_index ? 0 : ios_read)
-		| (mode.find("w") == str::invalid_index ? 0 : ios_write)
-		| (mode.find("b") == str::invalid_index ? 0 : ios_binary);
+			| (mode.find("w") == str::invalid_index ? 0 : ios_write)
+			| (mode.find("b") == str::invalid_index ? 0 : ios_binary);
 
 	if (m_flags & ios_read)
 		open_flags |= O_RDONLY;
@@ -114,7 +114,7 @@ size_t file::size() const
 
 	if (!is_open()) {
 		throw csd::invalid_operation_exception(
-		    "cannot get size of closed file");
+			"cannot get size of closed file");
 	}
 
 	if (fstat(m_fd, &fs) == -1)

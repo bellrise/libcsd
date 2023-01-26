@@ -1,5 +1,5 @@
 /* <libcsd/path.h>
-    Copyright (c) 2023 bellrise */
+	Copyright (c) 2023 bellrise */
 
 #pragma once
 
@@ -40,7 +40,7 @@ struct path
 	path& operator=(const path& copied_path);
 	path& operator=(path&& moved_path);
 
-    private:
+  private:
 	list<str> m_parts;
 	bool m_root;
 

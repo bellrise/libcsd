@@ -1,5 +1,5 @@
 /* <libcsd/map.h>
-    Copyright (c) 2022-2023 bellrise */
+	Copyright (c) 2022-2023 bellrise */
 
 #pragma once
 
@@ -45,7 +45,7 @@ struct map
 	}
 
 	map(map&& moved_map)
-	    : m_pairs(csd::move(moved_map.m_pairs))
+		: m_pairs(csd::move(moved_map.m_pairs))
 	{ }
 
 	list<K> keys() const
@@ -162,9 +162,7 @@ struct map
 			return "{}";
 
 		for (int i = 0; i < len(); i++) {
-			ret.append(m_pairs[i].key)
-			    .append(": ")
-			    .append(m_pairs[i].value);
+			ret.append(m_pairs[i].key).append(": ").append(m_pairs[i].value);
 
 			if (i + 1 != len())
 				ret.append(", ");
@@ -250,14 +248,14 @@ struct map
 
 		for (int i = 0; i < len(); i++) {
 			if (m_pairs[i].key != other.m_pairs[i].key
-			    || m_pairs[i].value != other.m_pairs[i].value)
+				|| m_pairs[i].value != other.m_pairs[i].value)
 				return false;
 		}
 
 		return true;
 	}
 
-    private:
+  private:
 	list<pair> m_pairs;
 
 	/* This is private, because the user shouldn't append many items in the

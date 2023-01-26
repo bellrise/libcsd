@@ -1,5 +1,5 @@
 /* <libcsd/file.h>
-    Copyright (c) 2023 bellrise */
+	Copyright (c) 2023 bellrise */
 
 #pragma once
 
@@ -29,7 +29,7 @@ struct file
 	/* Return the size of the file in bytes */
 	size_t size() const;
 
-    private:
+  private:
 	enum ios
 	{
 		ios_closed = 0,

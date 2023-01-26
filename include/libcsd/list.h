@@ -1,5 +1,5 @@
 /* <libcsd/list.h>
-    Copyright (c) 2022-2023 bellrise */
+	Copyright (c) 2022-2023 bellrise */
 
 #pragma once
 
@@ -25,16 +25,16 @@ struct list
 	using const_iterator = csd::iterator<T, T **, const T&>;
 
 	list()
-	    : m_space(0)
-	    , m_len(0)
-	    , m_ptr(nullptr)
+		: m_space(0)
+		, m_len(0)
+		, m_ptr(nullptr)
 	{ }
 
 	template <typename... Vt>
 	list(Vt... values)
-	    : m_space(0)
-	    , m_len(0)
-	    , m_ptr(nullptr)
+		: m_space(0)
+		, m_len(0)
+		, m_ptr(nullptr)
 	{
 		T value_array[] = {values...};
 		for (size_t i = 0; i < sizeof...(values); i++)
@@ -42,18 +42,18 @@ struct list
 	}
 
 	list(const list& copied_list)
-	    : m_space(0)
-	    , m_len(copied_list.len())
-	    , m_ptr(nullptr)
+		: m_space(0)
+		, m_len(copied_list.len())
+		, m_ptr(nullptr)
 	{
 		allocate_atleast(m_len);
 		copy_range(m_ptr, copied_list.m_ptr, m_len);
 	}
 
 	list(list&& moved_list)
-	    : m_space(moved_list.m_space)
-	    , m_len(moved_list.m_len)
-	    , m_ptr(moved_list.m_ptr)
+		: m_space(moved_list.m_space)
+		, m_len(moved_list.m_len)
+		, m_ptr(moved_list.m_ptr)
 	{
 		moved_list.m_space = 0;
 		moved_list.m_len = 0;
@@ -348,7 +348,7 @@ struct list
 		return const_iterator(&m_ptr[len()]);
 	}
 
-    private:
+  private:
 	int resolve_index(int index) const
 	{
 		if (index < 0)

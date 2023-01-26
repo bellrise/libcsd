@@ -26,7 +26,7 @@ concept ImplementsToString = requires(T t) { static_cast<str>(t.to_str()); };
  */
 template <typename T>
 concept StringConvertible =
-    ImplementsToString<T> || requires(T t) { static_cast<str>(t); };
+	ImplementsToString<T> || requires(T t) { static_cast<str>(t); };
 
 } // namespace csd
 
@@ -54,7 +54,7 @@ struct str
 
 	template <csd::ImplementsToString T>
 	str(const T& object)
-	    : str(object.to_str())
+		: str(object.to_str())
 	{ }
 
 	~str();
@@ -115,7 +115,7 @@ struct str
 	const iterator begin() const;
 	const iterator end() const;
 
-    protected:
+  protected:
 	char *m_ptr;
 	int m_space;
 	int m_len;

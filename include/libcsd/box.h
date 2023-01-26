@@ -42,27 +42,27 @@ template <typename T>
 struct box
 {
 	box()
-	    : m_ptr(new T)
-	    , m_arc(new csd::__arc)
-	{}
+		: m_ptr(new T)
+		, m_arc(new csd::__arc)
+	{ }
 
 	box(T&& moved_value)
-	    : m_ptr(new T(moved_value))
-	    , m_arc(new csd::__arc)
+		: m_ptr(new T(moved_value))
+		, m_arc(new csd::__arc)
 	{
 		csd::__arc_init(*m_arc, 1);
 	}
 
 	box(const T& copy_value)
-	    : m_ptr(new T(copy_value))
-	    , m_arc(new csd::__arc)
+		: m_ptr(new T(copy_value))
+		, m_arc(new csd::__arc)
 	{
 		csd::__arc_init(*m_arc, 1);
 	}
 
 	box(const box& other)
-	    : m_ptr(other.m_ptr)
-	    , m_arc(other.m_arc)
+		: m_ptr(other.m_ptr)
+		, m_arc(other.m_arc)
 	{
 		csd::__arc_inc(*m_arc);
 	}
@@ -112,7 +112,7 @@ struct box
 		return m_ptr;
 	}
 
-	const T *const operator->() const
+	const T *operator->() const
 	{
 		return m_ptr;
 	}
@@ -125,12 +125,11 @@ struct box
 	str to_str() const
 	{
 		char buf[64];
-		snprintf(buf, 64, "<box %p refs=%zu>", m_ptr,
-			 csd::__arc_load(*m_arc));
+		snprintf(buf, 64, "<box %p refs=%zu>", m_ptr, csd::__arc_load(*m_arc));
 		return buf;
 	}
 
-    private:
+  private:
 	T *m_ptr;
 	csd::__arc *m_arc;
 };

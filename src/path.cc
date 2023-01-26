@@ -14,8 +14,8 @@
 namespace csd {
 
 path::path()
-    : m_parts()
-    , m_root(false)
+	: m_parts()
+	, m_root(false)
 { }
 
 path::path(const path& copied_path)
@@ -29,15 +29,15 @@ path::path(path&& moved_path)
 }
 
 path::path(const str& path)
-    : m_parts()
-    , m_root(false)
+	: m_parts()
+	, m_root(false)
 {
 	set(path);
 }
 
 path::path(const char *path)
-    : m_parts()
-    , m_root(false)
+	: m_parts()
+	, m_root(false)
 {
 	set(path);
 }
@@ -139,8 +139,7 @@ list<path> path::dir_contents() const
 	dir = opendir(absolute().to_str().unsafe_ptr());
 
 	while ((dir_thing = readdir(dir))) {
-		if (str(dir_thing->d_name) == ".."
-		    || str(dir_thing->d_name) == ".") {
+		if (str(dir_thing->d_name) == ".." || str(dir_thing->d_name) == ".") {
 			continue;
 		}
 
@@ -174,8 +173,8 @@ list<str> path::resolve_parts(str path)
 
 	if (path.contains("~") && path[0] != '~') {
 		throw csd::invalid_argument_exception(
-		    "path cannot have a `~` anywhere other than the beginning "
-		    "of the path");
+			"path cannot have a `~` anywhere other than the beginning "
+			"of the path");
 	}
 
 	path.replace("~", get_user_home());

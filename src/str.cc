@@ -8,23 +8,23 @@
 #include <string.h>
 
 str::str()
-    : m_ptr(nullptr)
-    , m_space(0)
-    , m_len(0)
+	: m_ptr(nullptr)
+	, m_space(0)
+	, m_len(0)
 { }
 
 str::str(const str& other)
-    : m_ptr(nullptr)
-    , m_space(0)
-    , m_len(0)
+	: m_ptr(nullptr)
+	, m_space(0)
+	, m_len(0)
 {
 	copy_from(other);
 }
 
 str::str(str&& moved)
-    : m_ptr(moved.m_ptr)
-    , m_space(moved.m_space)
-    , m_len(moved.m_len)
+	: m_ptr(moved.m_ptr)
+	, m_space(moved.m_space)
+	, m_len(moved.m_len)
 {
 	moved.m_ptr = nullptr;
 	moved.m_space = 0;
@@ -32,9 +32,9 @@ str::str(str&& moved)
 }
 
 str::str(const char *string)
-    : m_ptr(nullptr)
-    , m_space(0)
-    , m_len(0)
+	: m_ptr(nullptr)
+	, m_space(0)
+	, m_len(0)
 {
 	if (string == nullptr)
 		return;
@@ -47,17 +47,17 @@ str::str(const char *string)
 }
 
 str::str(const char *string, int maxlen)
-    : m_ptr(nullptr)
-    , m_space(0)
-    , m_len(0)
+	: m_ptr(nullptr)
+	, m_space(0)
+	, m_len(0)
 {
 	copy_from_raw(string, maxlen);
 }
 
 str::str(void *pointer)
-    : m_ptr(nullptr)
-    , m_space(0)
-    , m_len(0)
+	: m_ptr(nullptr)
+	, m_space(0)
+	, m_len(0)
 {
 	char buf[16];
 	memset(buf, 0, 16);
@@ -67,9 +67,9 @@ str::str(void *pointer)
 }
 
 str::str(size_t number)
-    : m_ptr(nullptr)
-    , m_space(0)
-    , m_len(0)
+	: m_ptr(nullptr)
+	, m_space(0)
+	, m_len(0)
 {
 	char buf[16];
 	memset(buf, 0, 16);
@@ -79,9 +79,9 @@ str::str(size_t number)
 }
 
 str::str(float number)
-    : m_ptr(nullptr)
-    , m_space(0)
-    , m_len(0)
+	: m_ptr(nullptr)
+	, m_space(0)
+	, m_len(0)
 {
 	char buf[16];
 	memset(buf, 0, 16);
@@ -91,9 +91,9 @@ str::str(float number)
 }
 
 str::str(int number)
-    : m_ptr(nullptr)
-    , m_space(0)
-    , m_len(0)
+	: m_ptr(nullptr)
+	, m_space(0)
+	, m_len(0)
 {
 	char buf[16];
 	memset(buf, 0, 16);
@@ -103,9 +103,9 @@ str::str(int number)
 }
 
 str::str(char c)
-    : m_ptr(nullptr)
-    , m_space(0)
-    , m_len(0)
+	: m_ptr(nullptr)
+	, m_space(0)
+	, m_len(0)
 {
 	copy_from_raw(&c, 1);
 }
@@ -215,7 +215,7 @@ str& str::replace(const str& substr, const str& replacement)
 		return *this;
 
 	*this = this->substr(0, index) + replacement
-	      + this->substr(index + substr.len());
+		  + this->substr(index + substr.len());
 	return *this;
 }
 

@@ -37,7 +37,7 @@ struct index_exception : public any_exception
 	index_exception(int index, int min, int max);
 	str message() const override;
 
-    private:
+  private:
 	bool m_has_bounds;
 	str m_str_index;
 	int m_index;
@@ -65,7 +65,7 @@ struct nullptr_exception : public any_exception
 
 	str message() const override;
 
-    private:
+  private:
 	str m_message;
 };
 
@@ -79,7 +79,7 @@ struct memory_exception : public any_exception
 
 	str message() const override;
 
-    private:
+  private:
 	str m_message;
 };
 
@@ -93,7 +93,7 @@ struct invalid_operation_exception : public any_exception
 
 	str message() const override;
 
-    private:
+  private:
 	str m_message;
 };
 
@@ -107,7 +107,7 @@ struct invalid_argument_exception : public any_exception
 
 	str message() const override;
 
-    private:
+  private:
 	str m_message;
 };
 

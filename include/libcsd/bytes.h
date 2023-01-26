@@ -48,7 +48,7 @@ struct bytes
 
 	bytes& operator=(const bytes& other);
 
-    private:
+  private:
 	byte *m_ptr;
 	int m_size;
 	bool m_user_provided;

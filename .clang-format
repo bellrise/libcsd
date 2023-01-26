@@ -4,10 +4,10 @@ Standard: c++20
 IncludeBlocks: Regroup
 UseTab: ForContinuationAndIndentation
 AllowShortIfStatementsOnASingleLine: false
-IndentWidth: 8
-TabWidth: 8
+IndentWidth: 4
+TabWidth: 4
 IndentCaseLabels: false
-AccessModifierOffset: -4
+AccessModifierOffset: -2
 IndentAccessModifiers: false
 AllowShortFunctionsOnASingleLine: Empty
 AllowShortLambdasOnASingleLine: None

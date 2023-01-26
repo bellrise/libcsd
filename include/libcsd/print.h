@@ -2,8 +2,8 @@
    Copyright (c) 2022-2023 bellrise */
 
 #pragma once
-#include <libcsd/str.h>
 #include <libcsd/file.h>
+#include <libcsd/str.h>
 
 /* Print functions. */
 

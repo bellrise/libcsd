@@ -12,11 +12,10 @@ struct iterator
 {
 	/* T, Pointer & Reference should be based on the same type T. */
 	static_assert(same_type<base_type<T>, base_type<Pointer>>);
-	static_assert(
-	    same_type<base_type<T>, remove_const<base_type<Reference>>>);
+	static_assert(same_type<base_type<T>, remove_const<base_type<Reference>>>);
 
 	iterator(Pointer ptr)
-	    : m_ptr(ptr)
+		: m_ptr(ptr)
 	{ }
 
 	/**
@@ -60,7 +59,7 @@ struct iterator
 		return a.m_ptr != b.m_ptr;
 	}
 
-    protected:
+  protected:
 	Pointer m_ptr;
 };
 

@@ -1,5 +1,5 @@
 /* <libcsd/detail.h>
-    Copyright (c) 2022-2023 bellrise */
+	Copyright (c) 2022-2023 bellrise */
 
 #pragma once
 
@@ -95,10 +95,9 @@ constexpr static bool same_type = same_type_s<T, U>::result;
  * Any type that can be moved.
  */
 template <typename T>
-concept IsMovable = requires(base_type<T> a, base_type<T> v)
-{
-	a = static_cast<base_type<T>&&>(v);
-};
+concept IsMovable = requires(base_type<T> a, base_type<T> v) {
+						a = static_cast<base_type<T>&&>(v);
+					};
 
 /**
  * @concept IsComparable<T, U>
@@ -106,13 +105,12 @@ concept IsMovable = requires(base_type<T> a, base_type<T> v)
  * equality operator (==).
  */
 template <typename T, typename U>
-concept IsComparable = requires(base_type<T> a, base_type<U> b)
-{
-	a == b;
-	b == a;
-	a != b;
-	b != a;
-};
+concept IsComparable = requires(base_type<T> a, base_type<U> b) {
+						   a == b;
+						   b == a;
+						   a != b;
+						   b != a;
+					   };
 
 template <typename T>
 constexpr inline base_type<T>&& move(T&& thing)
@@ -126,9 +124,6 @@ constexpr inline base_type<T>&& move(T&& thing)
  * amount & types of arguments.
  */
 template <typename F, typename... Args>
-concept Callable = requires(F f, Args... args)
-{
-	f(args...);
-};
+concept Callable = requires(F f, Args... args) { f(args...); };
 
 } // namespace csd

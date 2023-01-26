@@ -8,15 +8,15 @@
 #include <string.h>
 
 bytes::bytes()
-    : m_ptr(nullptr)
-    , m_size(0)
-    , m_user_provided(false)
+	: m_ptr(nullptr)
+	, m_size(0)
+	, m_user_provided(false)
 { }
 
 bytes::bytes(bytes&& moved_bytes)
-    : m_ptr(moved_bytes.m_ptr)
-    , m_size(moved_bytes.m_size)
-    , m_user_provided(moved_bytes.m_user_provided)
+	: m_ptr(moved_bytes.m_ptr)
+	, m_size(moved_bytes.m_size)
+	, m_user_provided(moved_bytes.m_user_provided)
 {
 	moved_bytes.m_ptr = nullptr;
 	moved_bytes.m_size = 0;
@@ -57,9 +57,8 @@ void bytes::alloc(int nbytes)
 {
 	if (m_user_provided) {
 		if (nbytes > m_size) {
-			throw csd::memory_exception(
-			    "bytes: cannot alloc() more space in a "
-			    "user-provided memory area");
+			throw csd::memory_exception("bytes: cannot alloc() more space in a "
+										"user-provided memory area");
 		}
 
 		return;
