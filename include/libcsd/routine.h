@@ -77,34 +77,34 @@ struct routine<R(Args...)>
 	constexpr static int n_args = sizeof...(Args);
 
 	routine()
-	    : m_emplace(nullptr)
-	    , m_invoke(nullptr)
-	    , m_ptr(nullptr)
+		: m_emplace(nullptr)
+		, m_invoke(nullptr)
+		, m_ptr(nullptr)
 	{ }
 
 	template <csd::Callable<Args...> F>
 	routine(F routine)
-	    : m_emplace(reinterpret_cast<emplace_type>(emplace_impl<F>))
-	    , m_invoke(reinterpret_cast<invoke_type>(invoke_impl<F>))
-	    , m_ptr(nullptr)
+		: m_emplace(reinterpret_cast<emplace_type>(emplace_impl<F>))
+		, m_invoke(reinterpret_cast<invoke_type>(invoke_impl<F>))
+		, m_ptr(nullptr)
 	{
 		m_container.alloc(sizeof(routine));
 		m_emplace((char *) m_container.raw_ptr(),
-			  reinterpret_cast<char *>(&routine));
+				  reinterpret_cast<char *>(&routine));
 	}
 
 	routine(const routine& copy)
-	    : m_emplace(copy.m_emplace)
-	    , m_invoke(copy.m_invoke)
-	    , m_container(csd::move(copy.m_container.copy()))
-	    , m_ptr(copy.m_ptr)
+		: m_emplace(copy.m_emplace)
+		, m_invoke(copy.m_invoke)
+		, m_container(csd::move(copy.m_container.copy()))
+		, m_ptr(copy.m_ptr)
 	{ }
 
 	routine(routine&& moved)
-	    : m_emplace(moved.m_emplace)
-	    , m_invoke(moved.m_invoke)
-	    , m_container(csd::move(moved.m_container))
-	    , m_ptr(moved.m_ptr)
+		: m_emplace(moved.m_emplace)
+		, m_invoke(moved.m_invoke)
+		, m_container(csd::move(moved.m_container))
+		, m_ptr(moved.m_ptr)
 	{
 		moved.m_emplace = nullptr;
 		moved.m_invoke = nullptr;
@@ -113,9 +113,9 @@ struct routine<R(Args...)>
 	}
 
 	routine(type routine)
-	    : m_emplace(nullptr)
-	    , m_invoke(nullptr)
-	    , m_ptr(routine)
+		: m_emplace(nullptr)
+		, m_invoke(nullptr)
+		, m_ptr(routine)
 	{ }
 
 	bool has_routine() const
@@ -129,8 +129,7 @@ struct routine<R(Args...)>
 			return m_ptr(args...);
 
 		if (!m_container.size()) {
-			throw csd::nullptr_exception(
-			    "routine missing function pointer");
+			throw csd::nullptr_exception("routine missing function pointer");
 		}
 
 		return m_invoke((char *) m_container.raw_ptr(), args...);
@@ -138,7 +137,11 @@ struct routine<R(Args...)>
 
 	routine& operator=(const routine& other)
 	{
-		return *this(other);
+		m_emplace = other.m_emplace;
+		m_invoke = other.m_invoke;
+		m_container = csd::move(other.m_container.copy());
+		m_ptr = other.m_ptr;
+		return *this;
 	}
 
 	bool operator!() const
@@ -149,13 +152,13 @@ struct routine<R(Args...)>
 	str to_str() const
 	{
 		return csd::format(
-		    "<{} n_args={}>",
-		    m_ptr ? csd::format("weak routine at {}", (void *) m_ptr)
-			  : "routine object",
-		    n_args);
+			"<{} n_args={}>",
+			m_ptr ? csd::format("weak routine at {}", (void *) m_ptr)
+				  : "routine object",
+			n_args);
 	}
 
-    private:
+  private:
 	using emplace_type = void (*)(void *, void *);
 	using invoke_type = R (*)(void *, Args...);
 

@@ -6,11 +6,11 @@ using namespace csd;
 
 void thread::run(fptr_t fptr, void *arg)
 {
-	if (_is_running)
-		pthread_join(id, &ret);
+	if (m_busy)
+		pthread_join(m_id, &m_ret);
 
-	pthread_create(&id, NULL, fptr, arg);
-	_is_running = true;
+	pthread_create(&m_id, NULL, fptr, arg);
+	m_busy = true;
 }
 
 thread::thread(fptr_t fptr)
@@ -23,54 +23,64 @@ thread::thread(fptr_t fptr, void *arg)
 	run(fptr, arg);
 }
 
+thread::thread(thread&& moved_thread)
+    : m_id(moved_thread.m_id)
+    , m_ret(moved_thread.m_ret)
+    , m_busy(moved_thread.m_busy)
+{
+	moved_thread.m_id = 0;
+	moved_thread.m_ret = NULL;
+	moved_thread.m_busy = false;
+}
+
 thread::~thread()
 {
-	/* TODO: implement proper destructor */
+	pthread_join(m_id, &m_ret);
 }
 
 pthread_t thread::getid() const
 {
-	return id;
+	return m_id;
 }
 
 int thread::join()
 {
-	int c = pthread_join(id, &ret);
-	_is_running = false;
+	int c = pthread_join(m_id, &m_ret);
+	m_busy = false;
 	return c;
 }
 
-void *thread::get_result()
+void *thread::result()
 {
-	if (_is_running)
+	if (m_busy)
 		this->join();
 
-	return ret;
+	return m_ret;
 }
 
 int thread::detach() const
 {
-	return pthread_detach(id);
+	return pthread_detach(m_id);
 }
 
 int thread::cancel() const
 {
-	return pthread_cancel(id);
+	return pthread_cancel(m_id);
 }
 
 void thread::exit()
 {
-	pthread_exit(&id);
+	pthread_exit(&m_id);
 }
 
 int thread::kill(int sig) const
 {
-	return pthread_kill(id, sig);
+	return pthread_kill(m_id, sig);
 }
 
 bool thread::operator==(const thread& other) const
 {
-	return id == other.getid();
+	return m_id == other.getid();
 }
 
 void thread::operator()(fptr_t fptr, void *arg)
