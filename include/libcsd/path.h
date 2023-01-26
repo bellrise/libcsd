@@ -4,7 +4,6 @@
 #pragma once
 
 #include <libcsd/list.h>
-#include <libcsd/str.h>
 
 namespace csd {
 

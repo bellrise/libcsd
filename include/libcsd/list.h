@@ -3,14 +3,8 @@
 
 #pragma once
 
-#include <libcsd/detail.h>
-#include <libcsd/error.h>
-#include <libcsd/iterator.h>
 #include <libcsd/routine.h>
-#include <libcsd/str.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <string.h>
+#include <memory.h>
 
 /**
  * @class list<T>

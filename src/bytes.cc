@@ -2,7 +2,6 @@
    Copyright (c) 2022-2023 bellrise */
 
 #include <libcsd/bytes.h>
-#include <libcsd/detail.h>
 #include <libcsd/error.h>
 #include <libcsd/format.h>
 #include <string.h>

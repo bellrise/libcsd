@@ -5,8 +5,6 @@
 #include <libcsd/bytes.h>
 #include <libcsd/error.h>
 #include <libcsd/file.h>
-#include <libcsd/format.h>
-#include <libcsd/print.h>
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <unistd.h>

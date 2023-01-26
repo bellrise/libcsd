@@ -2,11 +2,7 @@
    Copyright (c) 2023 bellrise */
 
 #include <dirent.h>
-#include <libcsd/error.h>
-#include <libcsd/list.h>
 #include <libcsd/path.h>
-#include <libcsd/print.h>
-#include <linux/limits.h>
 #include <pwd.h>
 #include <sys/stat.h>
 #include <unistd.h>

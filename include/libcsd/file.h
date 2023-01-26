@@ -3,9 +3,7 @@
 
 #pragma once
 
-#include <libcsd/error.h>
 #include <libcsd/str.h>
-#include <stdio.h>
 
 namespace csd {
 
