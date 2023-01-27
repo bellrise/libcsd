@@ -196,6 +196,16 @@ str str::substr(int start_index, int length) const
 	return str(m_ptr + start_index, length);
 }
 
+const char *str::unsafe_ptr() const
+{
+	return m_ptr;
+}
+
+const csd::str_view str::view()
+{
+	return {m_ptr, m_len};
+}
+
 str& str::replace(char from, char to)
 {
 	for (int i = 0; i < m_len; i++) {

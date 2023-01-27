@@ -28,6 +28,17 @@ template <typename T>
 concept StringConvertible =
 	ImplementsToString<T> || requires(T t) { static_cast<str>(t); };
 
+struct str_view
+{
+	char *ptr;
+	int len;
+
+	str_view(char *ptr_, int len_)
+		: ptr(ptr_)
+		, len(len_)
+	{ }
+};
+
 } // namespace csd
 
 /**
@@ -84,10 +95,10 @@ struct str
 	 */
 	str substr(int start_index, int length = -1) const;
 
-	const char *unsafe_ptr() const
-	{
-		return m_ptr;
-	}
+	const char *unsafe_ptr() const;
+
+	/* Return a view to a string. */
+	const csd::str_view view();
 
 	/* Chain-modify methods */
 	str& replace(char from, char to);
