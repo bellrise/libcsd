@@ -1,6 +1,8 @@
 /* libcsd/src/file.cc
    Copyright (c) 2023 bellrise */
 
+#include "libcsd/list.h"
+
 #include <fcntl.h>
 #include <libcsd/bytes.h>
 #include <libcsd/error.h>
@@ -24,7 +26,7 @@ file::~file()
 		close();
 }
 
-void file::open(const str& path, const str& mode)
+void file::open(str path, const str& mode)
 {
 	int open_flags = 0;
 
@@ -40,7 +42,7 @@ void file::open(const str& path, const str& mode)
 	else if (m_flags & (ios_write | ios_read))
 		open_flags |= O_RDWR;
 
-	m_fd = ::open(path.unsafe_ptr(), open_flags);
+	m_fd = ::open(path.view().ptr, open_flags);
 	if (m_fd == -1) {
 		throw csd::invalid_operation_exception("failed to open file");
 		m_flags = ios_closed;
@@ -101,9 +103,27 @@ str file::read_string(int size)
 	return read(size).as_str();
 }
 
+void file::seek(size_t pos)
+{
+	if (!is_open())
+		return;
+	lseek(m_fd, pos, SEEK_SET);
+}
+
 str file::read_all()
 {
 	return read_string(size());
+}
+
+list<str> file::read_lines()
+{
+	str contents = read_string(size());
+	list<str> lines = split_str(contents, "\n");
+	lines.apply([](str& line) {
+		return line.strip();
+	});
+
+	return lines;
 }
 
 size_t file::size() const

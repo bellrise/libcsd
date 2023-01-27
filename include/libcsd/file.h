@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <libcsd/list.h>
 #include <libcsd/str.h>
 
 namespace csd {
@@ -12,7 +13,7 @@ struct file
 	file();
 	~file();
 
-	void open(const str& path, const str& mode);
+	void open(str path, const str& mode);
 	void close();
 	bool is_open() const;
 
@@ -22,7 +23,10 @@ struct file
 	size_t write_string(const str& s);
 	str read_string(int size);
 
+	void seek(size_t pos);
+
 	str read_all();
+	list<str> read_lines();
 
 	/* Return the size of the file in bytes */
 	size_t size() const;

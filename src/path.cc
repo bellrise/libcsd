@@ -107,7 +107,7 @@ bool path::is_file() const
 {
 	struct stat info;
 
-	if (lstat(absolute().to_str().unsafe_ptr(), &info))
+	if (lstat(absolute().to_str().view().ptr, &info))
 		return false;
 	return S_ISREG(info.st_mode);
 }
@@ -116,14 +116,14 @@ bool path::is_dir() const
 {
 	struct stat info;
 
-	if (lstat(absolute().to_str().unsafe_ptr(), &info))
+	if (lstat(absolute().to_str().view().ptr, &info))
 		return false;
 	return S_ISDIR(info.st_mode);
 }
 
 bool path::exists() const
 {
-	return !access(absolute().to_str().unsafe_ptr(), F_OK);
+	return !access(absolute().to_str().view().ptr, F_OK);
 }
 
 list<path> path::dir_contents() const
@@ -132,7 +132,7 @@ list<path> path::dir_contents() const
 	DIR *dir;
 	list<path> contents;
 
-	dir = opendir(absolute().to_str().unsafe_ptr());
+	dir = opendir(absolute().to_str().view().ptr);
 
 	while ((dir_thing = readdir(dir))) {
 		if (str(dir_thing->d_name) == ".." || str(dir_thing->d_name) == ".") {
