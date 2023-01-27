@@ -1,6 +1,7 @@
 /* libcsd/src/str.cc
    Copyright (c) 2022-2023 bellrise */
 
+#include <ctype.h>
 #include <libcsd/bytes.h>
 #include <libcsd/error.h>
 #include <new>
@@ -196,9 +197,37 @@ str str::substr(int start_index, int length) const
 	return str(m_ptr + start_index, length);
 }
 
-const char *str::unsafe_ptr() const
+str& str::lstrip()
 {
-	return m_ptr;
+	int i = 0;
+	while (i < m_len - 1) {
+		if (!isspace(m_ptr[i]))
+			break;
+		++i;
+	}
+
+	*this = substr(i);
+	return *this;
+}
+
+str& str::rstrip()
+{
+	int i = m_len;
+	while (i > 0) {
+		if (!isspace(m_ptr[i]))
+			break;
+		--i;
+	}
+
+	*this = substr(0, i + 1);
+	return *this;
+}
+
+str& str::strip()
+{
+	lstrip();
+	rstrip();
+	return *this;
 }
 
 const csd::str_view str::view()

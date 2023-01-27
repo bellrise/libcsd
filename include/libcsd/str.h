@@ -95,9 +95,9 @@ struct str
 	 */
 	str substr(int start_index, int length = -1) const;
 
-	const char *unsafe_ptr() const;
-
-	/* Return a view to a string. */
+	str& lstrip();
+	str& rstrip();
+	str& strip();
 	const csd::str_view view();
 
 	/* Chain-modify methods */
