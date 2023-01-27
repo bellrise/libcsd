@@ -4,10 +4,8 @@
 #pragma once
 
 #include <libcsd/bytes.h>
-#include <libcsd/detail.h>
 #include <libcsd/error.h>
 #include <libcsd/format.h>
-#include <stddef.h>
 
 template <typename R>
 struct routine;

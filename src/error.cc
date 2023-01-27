@@ -1,9 +1,8 @@
 /* libcsd/src/error.cc
    Copyright (c) 2022-2023 bellrise */
 
-#include "libcsd/format.h"
-
 #include <libcsd/error.h>
+#include <libcsd/format.h>
 
 namespace csd {
 

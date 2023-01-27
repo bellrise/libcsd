@@ -4,7 +4,6 @@
 #pragma once
 
 #include <libcsd/str.h>
-#include <stdexcept>
 
 namespace csd {
 

@@ -1,0 +1,5 @@
+Scripts must be runned from project root directory.
+
+config - variables used in scripts
+install - installs library with headers
+build - builds library

@@ -3,7 +3,6 @@
 
 #pragma once
 #include <libcsd/file.h>
-#include <libcsd/str.h>
 
 /* Print functions. */
 

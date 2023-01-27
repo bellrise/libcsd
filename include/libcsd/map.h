@@ -3,9 +3,6 @@
 
 #pragma once
 
-#include <libcsd/detail.h>
-#include <libcsd/error.h>
-#include <libcsd/format.h>
 #include <libcsd/list.h>
 #include <libcsd/maybe.h>
 
