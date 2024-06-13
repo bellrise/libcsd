@@ -1,5 +1,5 @@
 /* <libcsd/detail.h>
-        Copyright (c) 2022-2023 bellrise */
+		Copyright (c) 2022-2023 bellrise */
 
 #pragma once
 
@@ -7,42 +7,42 @@ namespace csd {
 
 struct true_result
 {
-    static constexpr bool result = true;
+	static constexpr bool result = true;
 };
 
 struct false_result
 {
-    static constexpr bool result = false;
+	static constexpr bool result = false;
 };
 
 template <typename T>
 struct base_type_s
 {
-    using type = T;
+	using type = T;
 };
 
 template <typename T>
 struct base_type_s<T&>
 {
-    using type = T;
+	using type = T;
 };
 
 template <typename T>
 struct base_type_s<T&&>
 {
-    using type = T;
+	using type = T;
 };
 
 template <typename T>
 struct base_type_s<T *>
 {
-    using type = T;
+	using type = T;
 };
 
 template <typename T>
 struct base_type_s<T **>
 {
-    using type = T;
+	using type = T;
 };
 
 /**
@@ -56,13 +56,13 @@ using base_type = typename base_type_s<T>::type;
 template <typename T>
 struct remove_const_s
 {
-    using type = T;
+	using type = T;
 };
 
 template <typename T>
 struct remove_const_s<const T>
 {
-    using type = T;
+	using type = T;
 };
 
 /**
@@ -96,8 +96,16 @@ constexpr static bool same_type = same_type_s<T, U>::result;
  */
 template <typename T>
 concept IsMovable = requires(base_type<T> a, base_type<T> v) {
-    a = static_cast<base_type<T>&&>(v);
+	a = static_cast<base_type<T>&&>(v);
 };
+
+/**
+ * @concept IsExplicitlyCopyable<T>
+ * Any type that has a .copy() method.
+ */
+template <typename T>
+concept IsExplicitlyCopyable =
+	requires(base_type<T> a, base_type<T> b) { a = b.copy(); };
 
 /**
  * @concept IsComparable<T, U>
@@ -106,16 +114,16 @@ concept IsMovable = requires(base_type<T> a, base_type<T> v) {
  */
 template <typename T, typename U>
 concept IsComparable = requires(base_type<T> a, base_type<U> b) {
-    a == b;
-    b == a;
-    a != b;
-    b != a;
+	a == b;
+	b == a;
+	a != b;
+	b != a;
 };
 
 template <typename T>
 constexpr inline base_type<T>&& move(T&& thing)
 {
-    return static_cast<base_type<T>&&>(thing);
+	return static_cast<base_type<T>&&>(thing);
 }
 
 /**

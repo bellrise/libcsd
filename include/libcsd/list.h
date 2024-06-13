@@ -150,6 +150,13 @@ struct list
 		m_space = 0;
 	}
 
+	list<T> copy() const
+	{
+		list v;
+		v.copy_from(this);
+		return v;
+	};
+
 	/**
 	 * @method filter
 	 * Filter the list, keeping only the elements that pass the check by
@@ -442,6 +449,7 @@ struct list
 	void copy_from(const list& other_list)
 	{
 		clear();
+		allocate_atleast(other_list.m_len);
 		for (const auto& v : other_list)
 			append(v);
 	}

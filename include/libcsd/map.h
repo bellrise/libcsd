@@ -91,6 +91,16 @@ struct map
 		m_pairs.clear();
 	}
 
+	map<K, V> copy() const
+	{
+		map m;
+
+		for (const pair& kv : m_pairs)
+			m.append(kv);
+
+		return m;
+	};
+
 	/**
 	 * @method update
 	 * Update a value at `key`. Throws if `key` is not found.
@@ -190,7 +200,11 @@ struct map
 
 	map& operator=(const map& other)
 	{
-		return this(other);
+		this->clear();
+		for (const pair& kv : other)
+			m_pairs.append(kv);
+
+		return *this;
 	}
 
 	/**

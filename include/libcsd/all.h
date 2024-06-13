@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <libcsd/args.h>
 #include <libcsd/box.h>
 #include <libcsd/bytes.h>
 #include <libcsd/error.h>

@@ -78,6 +78,7 @@ struct str
 	bool contains(const str& substr) const;
 	bool begins_with(const str& other) const;
 	bool ends_with(const str& other) const;
+	str copy() const;
 
 	/**
 	 * @method find

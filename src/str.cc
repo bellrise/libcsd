@@ -168,6 +168,13 @@ bool str::ends_with(const str& other) const
 	return other == substr(len() - other.len());
 }
 
+str str::copy() const
+{
+	str s;
+	s.copy_from(*this);
+	return s;
+}
+
 int str::find(const str& substr) const
 {
 	if (len() < substr.len() || substr.len() == 0)
