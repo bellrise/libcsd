@@ -5,9 +5,9 @@
 	exit 1
 }
 
-[ -d "../build" ] && {
-	meson compile -C ../build
+[ -d "build" ] && {
+	meson compile -C build
 } || {
-	meson setup ../build
-	meson compile -C ../build
+	meson setup build
+	meson compile -C build
 }
