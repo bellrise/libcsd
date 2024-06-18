@@ -23,11 +23,18 @@ struct args
 	map<str, str> parse_args(int argc, char **argv);
 
   private:
+	enum opt_kind
+	{
+		OPT_FLAG,
+		OPT_SINGLE,
+	};
+
 	struct opt
 	{
 		char short_opt;
 		str long_opt;
 		str help;
+		opt_kind kind;
 	};
 
 	list<opt> m_opts;

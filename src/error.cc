@@ -86,4 +86,14 @@ str invalid_argument_exception::message() const
 {
 	return str("invalid_argument_exception: ") + m_message;
 }
+
+stream_exception::stream_exception(const str& message)
+	: m_message(message)
+{ }
+
+str stream_exception::message() const
+{
+	return str("stream_exception: ") + m_message;
+}
+
 } // namespace csd

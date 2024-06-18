@@ -110,4 +110,25 @@ struct invalid_argument_exception : public any_exception
 	str m_message;
 };
 
+/**
+ * @exception io_exception
+ * Any I/O-related exception.
+ */
+struct io_exception : public any_exception
+{ };
+
+/**
+ * @exception stream_exception
+ * Something went wrong when writing/reading to a stream.
+ */
+struct stream_exception : public io_exception
+{
+	stream_exception(const str& message);
+
+	str message() const override;
+
+  private:
+	str m_message;
+};
+
 } // namespace csd

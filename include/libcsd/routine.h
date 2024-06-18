@@ -6,6 +6,7 @@
 #include <libcsd/bytes.h>
 #include <libcsd/error.h>
 #include <libcsd/format.h>
+#include <new>
 
 template <typename R>
 struct routine;
@@ -77,6 +78,7 @@ struct routine<R(Args...)>
 	routine()
 		: m_emplace(nullptr)
 		, m_invoke(nullptr)
+		, m_container()
 		, m_ptr(nullptr)
 	{ }
 
@@ -84,6 +86,7 @@ struct routine<R(Args...)>
 	routine(F routine)
 		: m_emplace(reinterpret_cast<emplace_type>(emplace_impl<F>))
 		, m_invoke(reinterpret_cast<invoke_type>(invoke_impl<F>))
+		, m_container()
 		, m_ptr(nullptr)
 	{
 		m_container.alloc(sizeof(routine));
@@ -113,6 +116,7 @@ struct routine<R(Args...)>
 	routine(type routine)
 		: m_emplace(nullptr)
 		, m_invoke(nullptr)
+		, m_container()
 		, m_ptr(routine)
 	{ }
 
@@ -131,6 +135,15 @@ struct routine<R(Args...)>
 		}
 
 		return m_invoke((char *) m_container.raw_ptr(), args...);
+	}
+
+	routine& operator=(decltype(nullptr))
+	{
+		m_emplace = nullptr;
+		m_invoke = nullptr;
+		m_container = bytes();
+		m_ptr = nullptr;
+		return *this;
 	}
 
 	routine& operator=(const routine& other)
@@ -154,6 +167,13 @@ struct routine<R(Args...)>
 			m_ptr ? csd::format("weak routine at {}", (void *) m_ptr)
 				  : "routine object",
 			n_args);
+	}
+
+	void remove()
+	{
+		m_emplace = nullptr;
+		m_invoke = nullptr;
+		m_ptr = nullptr;
 	}
 
   private:

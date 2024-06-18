@@ -16,4 +16,5 @@
 #include <libcsd/print.h>
 #include <libcsd/routine.h>
 #include <libcsd/str.h>
+#include <libcsd/stream.h>
 #include <libcsd/thread.h>
