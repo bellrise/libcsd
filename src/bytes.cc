@@ -4,6 +4,7 @@
 #include <libcsd/bytes.h>
 #include <libcsd/error.h>
 #include <libcsd/format.h>
+#include <stdio.h>
 #include <string.h>
 
 bytes::bytes()
@@ -103,6 +104,9 @@ bytes bytes::copy() const
 {
 	bytes buf;
 
+	if (m_ptr == nullptr)
+		return buf;
+
 	buf.m_ptr = new byte[m_size];
 	buf.m_size = m_size;
 	buf.copy_from(m_ptr, m_size);
@@ -133,6 +137,25 @@ bytes::byte *bytes::raw_ptr() const
 	return m_ptr;
 }
 
+int bytes::resolve_index(int index) const
+{
+	if (index < 0)
+		index = m_size + index;
+	if (index < 0 || index >= m_size)
+		throw csd::index_exception(index, 0, m_size - 1);
+	return index;
+}
+
+bytes::byte& bytes::operator[](int index)
+{
+	return m_ptr[resolve_index(index)];
+}
+
+const bytes::byte& bytes::operator[](int index) const
+{
+	return m_ptr[resolve_index(index)];
+}
+
 bytes& bytes::operator=(const bytes& other)
 {
 	if (!m_user_provided && m_ptr)
@@ -140,6 +163,10 @@ bytes& bytes::operator=(const bytes& other)
 
 	m_user_provided = false;
 	m_ptr = nullptr;
+	m_size = 0;
+
+	if (!other.size())
+		return *this;
 
 	alloc(other.m_size);
 	copy_from(other.m_ptr, other.m_size);

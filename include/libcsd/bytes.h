@@ -7,9 +7,9 @@
 
 /**
  * @class bytes
- * Continguous array of read/write bytes. By default, an array is allocated on
- * the heap, but you may provide a custom buffer with a size, but then the bytes
- * type will no longer be able to resize the buffer.
+ * Continguous array of bytes. By default, an array is allocated on the heap,
+ * but you may provide a custom buffer with a size, but then the bytes type
+ * will no longer be able to resize the buffer.
  */
 struct bytes
 {
@@ -40,6 +40,9 @@ struct bytes
 
 	byte *raw_ptr() const;
 
+	byte& operator[](int index);
+	const byte& operator[](int index) const;
+
 	template <typename T>
 	void copy_from(const T *any_ptr, int nbytes)
 	{
@@ -52,4 +55,6 @@ struct bytes
 	byte *m_ptr;
 	int m_size;
 	bool m_user_provided;
+
+	int resolve_index(int index) const;
 };
