@@ -62,6 +62,17 @@ bool file::is_open() const
 	return m_flags != ios_closed;
 }
 
+bool file::is_eof() const
+{
+	size_t offset;
+
+	if (!is_open())
+		return true;
+
+	offset = lseek(m_fd, 0, SEEK_CUR);
+	return offset == size();
+}
+
 size_t file::write(const bytes& buf)
 {
 	if (!is_writable())
@@ -71,7 +82,7 @@ size_t file::write(const bytes& buf)
 
 bytes file::read(int size)
 {
-	int bytes_read;
+	ssize_t bytes_read;
 	bytes res;
 	char *buf;
 
@@ -80,6 +91,12 @@ bytes file::read(int size)
 
 	buf = (char *) malloc(size);
 	bytes_read = ::read(m_fd, buf, size);
+
+	if (bytes_read == -1) {
+		free(buf);
+		throw csd::invalid_operation_exception(
+			"failed to read file descriptor");
+	}
 
 	if (!bytes_read) {
 		free(buf);
@@ -108,6 +125,36 @@ void file::seek(size_t pos)
 	if (!is_open())
 		return;
 	lseek(m_fd, pos, SEEK_SET);
+}
+
+stream file::stream()
+{
+	struct stream s;
+
+	if (is_readable()) {
+		s.set_read_single([this]() {
+			bytes buf = this->read(1);
+			if (!buf.size())
+				throw csd::stream_exception("end of file");
+			return buf[0];
+		});
+
+		s.set_is_open([this]() {
+			return !this->is_eof();
+		});
+	}
+
+	if (is_writable()) {
+		s.set_write_single([this](bytes::byte b) {
+			::write(this->m_fd, &b, 1);
+		});
+
+		s.set_is_open([this]() {
+			return this->is_open();
+		});
+	}
+
+	return s;
 }
 
 str file::read_all()

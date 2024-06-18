@@ -3,6 +3,8 @@
 
 #include <libcsd/stream.h>
 
+namespace csd {
+
 stream::stream()
 	: m_read_single()
 	, m_write_single()
@@ -128,3 +130,5 @@ stream& stream::operator=(const stream& other)
 	m_is_open = other.m_is_open;
 	return *this;
 }
+
+} // namespace csd

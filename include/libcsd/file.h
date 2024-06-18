@@ -5,9 +5,14 @@
 
 #include <libcsd/list.h>
 #include <libcsd/str.h>
+#include <libcsd/stream.h>
 
 namespace csd {
 
+/**
+ * @class file
+ * Read or write to a file. Can be turned into a stream with .stream().
+ */
 struct file
 {
 	file();
@@ -16,20 +21,19 @@ struct file
 	void open(str path, const str& mode);
 	void close();
 	bool is_open() const;
+	bool is_eof() const;
 
 	size_t write(const bytes& buf);
 	bytes read(int size);
-
 	size_t write_string(const str& s);
 	str read_string(int size);
-
-	void seek(size_t pos);
-
 	str read_all();
 	list<str> read_lines();
 
-	/* Return the size of the file in bytes */
 	size_t size() const;
+	void seek(size_t pos);
+
+	stream stream();
 
   private:
 	enum ios

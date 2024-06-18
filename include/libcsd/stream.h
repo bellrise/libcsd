@@ -5,6 +5,8 @@
 
 #include <libcsd/routine.h>
 
+namespace csd {
+
 /**
  * @class stream
  * Represents a read/write object in a stream form, meaning you cannot
@@ -65,3 +67,5 @@ struct stream
 	bytes m_byte_buffer;
 	char m_byte_buffer_space;
 };
+
+} // namespace csd
